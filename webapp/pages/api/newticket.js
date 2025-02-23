@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createTicket, checkDuplicateTicketId } from '../../lib/db';
+import bcrypt from 'bcrypt';
 
 function generateTicketId() {
   const randomString = () => Math.random().toString(36).substring(2, 5);
@@ -18,7 +19,10 @@ export default async function handler(req, res) {
       ticket_id = generateTicketId();
     }
 
-    createTicket(ticket_id, name, email, message, password, status, response, (err, result) => {
+    // Hash the password before saving
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
+
+    createTicket(ticket_id, name, email, message, hashedPassword, status, response, (err, result) => {
       if (err) {
         res.status(500).json({ error: 'Failed to create ticket' });
       } else {
