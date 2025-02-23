@@ -24,12 +24,12 @@ const NavBar = () => {
         <div className="collapse navbar-collapse" id="navcol-1">
           <ul className="navbar-nav mx-auto">
             <li className="nav-item">
-              <Link href="/index.html" legacyBehavior>
+              <Link href="/index" legacyBehavior>
                 <a className="nav-link active">Contact</a>
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/tickets.html" legacyBehavior>
+              <Link href="/tickets" legacyBehavior>
                 <a className="nav-link">Tickets</a>
               </Link>
             </li>
