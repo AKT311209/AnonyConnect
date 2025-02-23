@@ -12,3 +12,5 @@ Prototyping ticket detail page - done.
 Prototyping ticket verification page - done.
 Start building react components from design.
 Designing contact page - done.
+Designing ticket lookup page - done.
+Implementing database + insertion for new tickets - done.

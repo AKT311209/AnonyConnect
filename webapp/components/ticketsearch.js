@@ -3,6 +3,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListAlt } from '@fortawesome/free-regular-svg-icons';
 
 const TicketSearch = () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const ticketId = event.target.elements[0].value;
+
+        const response = await fetch(`/api/checkticket?ticket_id=${ticketId}`);
+        const result = await response.json();
+
+        if (result.exists) {
+            window.location.href = `/ticket/${ticketId}`;
+        } else {
+            const toast = document.getElementById('toast-1');
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+    };
+
     return (
         <div className="container pb-5 mb-5 mt-5">
             <section className="py-5 pt-0">
@@ -15,8 +31,8 @@ const TicketSearch = () => {
                     </div>
                     <div className="row">
                         <div className="col mb-0 pb-0 mt-0 pt-0">
-                            <form className="bg-transparent border-0 shadow-none search-form">
-                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none"><span className="border-0 shadow-sm input-group-text"><FontAwesomeIcon icon={faListAlt} /></span><input className="border-0 shadow-sm form-control" type="text" placeholder="Your ticket id" required /><button className="btn btn-light border-0 shadow-sm" type="submit">View</button></div><div className="cf-turnstile" data-sitekey="<0x4AAAAAAA-RcQdPu6mWgu-p>"></div>
+                            <form className="bg-transparent border-0 shadow-none search-form" onSubmit={handleSubmit}>
+                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none"><span className="border-0 shadow-sm input-group-text"><FontAwesomeIcon icon={faListAlt} /></span><input className="border-0 shadow-sm form-control" type="text" placeholder="Your ticket id (xxx-xxx)" required /><button className="btn btn-light border-0 shadow-sm" type="submit">View</button></div><div className="cf-turnstile" data-sitekey="<0x4AAAAAAA-RcQdPu6mWgu-p>"></div>
                             </form>
                         </div>
                     </div>
