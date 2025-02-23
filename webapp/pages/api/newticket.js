@@ -9,26 +9,30 @@ function generateTicketId() {
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { name, email, message, password } = req.body;
-    let ticket_id = generateTicketId();
-    const status = 'Pending';
-    const response = null;
+    try {
+      const { name, email, message, password } = req.body;
+      let ticket_id = generateTicketId();
+      const status = 'Pending';
+      const response = null;
 
-    // Check for duplicate ticket_id
-    while (await checkDuplicateTicketId(ticket_id)) {
-      ticket_id = generateTicketId();
-    }
-
-    // Hash the password before saving
-    const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
-
-    createTicket(ticket_id, name, email, message, hashedPassword, status, response, (err, result) => {
-      if (err) {
-        res.status(500).json({ error: 'Failed to create ticket' });
-      } else {
-        res.status(200).json({ ticket_id });
+      // Check for duplicate ticket_id
+      while (await checkDuplicateTicketId(ticket_id)) {
+        ticket_id = generateTicketId();
       }
-    });
+
+      // Hash the password before saving
+      const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
+
+      createTicket(ticket_id, name, email, message, hashedPassword, status, response, (err, result) => {
+        if (err) {
+          res.status(500).json({ error: 'Failed to create ticket' });
+        } else {
+          res.status(200).json({ ticket_id });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   } else {
     res.status(405).json({ error: 'Method not allowed' });
   }
