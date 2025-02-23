@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const NavBar = () => {
+  const router = useRouter();
+
   return (
     <nav className="navbar navbar-expand-md sticky-top navbar-shrink py-3" id="mainNav">
       <div className="container">
@@ -24,13 +27,13 @@ const NavBar = () => {
         <div className="collapse navbar-collapse" id="navcol-1">
           <ul className="navbar-nav mx-auto">
             <li className="nav-item">
-              <Link href="/index" legacyBehavior>
-                <a className="nav-link active">Contact</a>
+              <Link href="/" legacyBehavior>
+                <a className={`nav-link ${router.pathname === '/' ? 'active' : ''}`}>Contact</a>
               </Link>
             </li>
             <li className="nav-item">
               <Link href="/tickets" legacyBehavior>
-                <a className="nav-link">Tickets</a>
+                <a className={`nav-link ${router.pathname === '/tickets' ? 'active' : ''}`}>Tickets</a>
               </Link>
             </li>
           </ul>
