@@ -1,6 +1,6 @@
 - 21/02/25: 
 Project start. 
-Start researching prototypes, determining tech stacks used.
+Start researching prototypes, determining dependencies used.
 Coming up with project structure & plan
 - 22/02/25:
 Structure planning done.
@@ -8,3 +8,7 @@ Start phase 1: UI Design.
 Prototyping contact page - done.
 - 23/02/25:
 Prototyping search page for ticket - done.
+Prototyping ticket detail page - done.
+Prototyping ticket verification page - done.
+Start building react components from design.
+Designing contact page - done.
