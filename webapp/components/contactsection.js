@@ -1,6 +1,27 @@
 import React from 'react';
 
 const ContactSection = () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch('/api/newticket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert(`Ticket created successfully! Your ticket ID is: ${result.ticket_id}`);
+        } else {
+            alert('Failed to create ticket');
+        }
+    };
+
     return (
         <section className="position-relative py-4 py-xl-5">
             <div className="container position-relative">
@@ -66,11 +87,13 @@ const ContactSection = () => {
                     </div>
                     <div className="col-md-6 col-lg-5 col-xl-4">
                         <div>
-                            <form className="p-3 p-xl-4 pe-0 me-0 ps-0 ms-0 mb-3" method="post">
+                            <form className="p-3 p-xl-4 pe-0 me-0 ps-0 ms-0 mb-3" method="post" onSubmit={handleSubmit}>
                                 <div className="mb-3"><input className="form-control" type="text" id="name" name="name" placeholder="Name (optional)" /></div>
                                 <div className="mb-3"><input className="form-control" type="email" id="email-2" name="email" placeholder="Email (optional)" /></div>
-                                <div className="mb-3"><textarea className="border rounded form-control mb-3" id="message-2" name="message" rows="6" placeholder="Message (required)" required></textarea></div><div className="cf-turnstile" data-sitekey="<0x4AAAAAAA-RcQdPu6mWgu-p>"></div>
-                                <div className="mb-3 me-0 pe-0"><input className="form-control" type="password" placeholder="Password (optional)" /><small className="form-text ps-0 pb-0 me-5 pe-0" style={{ marginRight: '54px' }}>Create a password to prevent others from viewing your ticket.</small></div><button className="btn btn-primary d-block w-100" type="submit">Send </button>
+                                <div className="mb-3"><textarea className="border rounded form-control mb-3" id="message-2" name="message" rows="6" placeholder="Message (required)" required></textarea></div>
+                                <div className="cf-turnstile" data-sitekey="<0x4AAAAAAA-RcQdPu6mWgu-p>"></div>
+                                <div className="mb-3 me-0 pe-0"><input className="form-control" type="password" name="password" placeholder="Password (optional)" /><small className="form-text ps-0 pb-0 me-5 pe-0" style={{ marginRight: '54px' }}>Create a password to prevent others from viewing your ticket.</small></div>
+                                <button className="btn btn-primary d-block w-100" type="submit">Send</button>
                             </form>
                         </div>
                     </div>
