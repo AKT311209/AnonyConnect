@@ -1,13 +1,24 @@
 import { v4 as uuidv4 } from 'uuid';
-import { createTicket } from '../../lib/db';
+import { createTicket, checkDuplicateTicketId } from '../../lib/db';
 
-export default function handler(req, res) {
+function generateTicketId() {
+  const randomString = () => Math.random().toString(36).substring(2, 5);
+  return `${randomString()}-${randomString()}`;
+}
+
+export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { name, email, message, password } = req.body;
-    const ticket_id = uuidv4();
+    let ticket_id = generateTicketId();
     const status = 'Pending';
+    const response = null;
 
-    createTicket(ticket_id, name, email, message, password, status, (err, result) => {
+    // Check for duplicate ticket_id
+    while (await checkDuplicateTicketId(ticket_id)) {
+      ticket_id = generateTicketId();
+    }
+
+    createTicket(ticket_id, name, email, message, password, status, response, (err, result) => {
       if (err) {
         res.status(500).json({ error: 'Failed to create ticket' });
       } else {

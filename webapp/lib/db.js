@@ -15,7 +15,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
       sender_email TEXT,
       message TEXT NOT NULL,
       password TEXT,
-      status TEXT DEFAULT 'Pending'
+      status TEXT DEFAULT 'Pending',
+      response TEXT
     )`, (err) => {
       if (err) {
         console.error('Error creating table', err);
@@ -24,9 +25,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-function createTicket(ticket_id, sender_name, sender_email, message, password, status, callback) {
-  const sql = `INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status) VALUES (?, ?, ?, ?, ?, ?)`;
-  db.run(sql, [ticket_id, sender_name, sender_email, message, password, status], function(err) {
+function createTicket(ticket_id, sender_name, sender_email, message, password, status, response, callback) {
+  const sql = `INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function(err) {
     if (err) {
       return callback(err);
     }
@@ -34,7 +35,21 @@ function createTicket(ticket_id, sender_name, sender_email, message, password, s
   });
 }
 
+function checkDuplicateTicketId(ticket_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT COUNT(*) AS count FROM tickets WHERE ticket_id = ?`;
+    db.get(sql, [ticket_id], (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row.count > 0);
+      }
+    });
+  });
+}
+
 module.exports = {
   db,
-  createTicket
+  createTicket,
+  checkDuplicateTicketId
 };

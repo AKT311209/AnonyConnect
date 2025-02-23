@@ -16,7 +16,7 @@ const ContactSection = () => {
 
         if (response.ok) {
             const result = await response.json();
-            alert(`Ticket created successfully! Your ticket ID is: ${result.ticket_id}`);
+            alert(`Ticket created successfully! Your ticket ID is: ${result.user_id}`);
         } else {
             alert('Failed to create ticket');
         }
