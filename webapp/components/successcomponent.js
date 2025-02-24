@@ -35,11 +35,11 @@ const Success = ({ ticket }) => {
                 <ul className="list-group border rounded-0">
                     <li className="list-group-item"><span>Ticket ID:&nbsp;</span><span><strong>{ticket.ticket_id}</strong></span></li>
                     <li className="list-group-item"><span>Ticket URL:&nbsp;</span><span><a className="link-primary" href={fullUrl}>{fullUrl}</a></span></li>
-                    <li className="list-group-item"><span>Submission time:&nbsp;</span><span>{formatDateTime(ticket.created_at)}</span></li>
-                    <li className="list-group-item"><span>Sender name:&nbsp;</span><span>{ticket.sender_name || 'N/A'}</span></li>
-                    <li className="list-group-item"><span>Sender email:&nbsp;</span><span>{ticket.sender_email || 'N/A'}</span></li>
-                    <li className="list-group-item"><span>Status:&nbsp;</span><span className={`${getStatusClass(ticket.status)} fw-bold`}>{ticket.status}</span></li>
-                    <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticket.password ? 'text-info' : 'text-danger'} fw-bold`}>{ticket.password ? 'Yes' : 'No'}</span></li>
+                    <li className="list-group-item"><span>Submission time:&nbsp;</span><span><strong>{formatDateTime(ticket.created_at)}</strong></span></li>
+                    <li className="list-group-item"><span>Sender name:&nbsp;</span><span><strong>{ticket.sender_name || 'N/A'}</strong></span></li>
+                    <li className="list-group-item"><span>Sender email:&nbsp;</span><span><strong>{ticket.sender_email || 'N/A'}</strong></span></li>
+                    <li className="list-group-item"><span>Status:&nbsp;</span><span className={`${getStatusClass(ticket.status)} fw-bold`}><strong>{ticket.status}</strong></span></li>
+                    <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticket.password ? 'text-info' : 'text-danger'} fw-bold`}><strong>{ticket.password ? 'Yes' : 'No'}</strong></span></li>
                 </ul>
             </div>
         </section>
