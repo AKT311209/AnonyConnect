@@ -17,7 +17,7 @@ const SuccessPage = () => {
     }
 
     const fetchTicket = async () => {
-      const response = await fetch(`/api/ticket/${ticket_id}`);
+      const response = await fetch(`/api/success/${ticket_id}`);
       if (!response.ok) {
         alert('Ticket not found.');
         router.push('/');
