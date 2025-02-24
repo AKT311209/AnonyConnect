@@ -1,6 +1,9 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 
 const ContactSection = () => {
+    const router = useRouter();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -16,9 +19,12 @@ const ContactSection = () => {
 
         if (response.ok) {
             const result = await response.json();
-            alert(`Ticket created successfully! Your ticket ID is: ${result.ticket_id}`);
+            router.push({
+                pathname: '/success',
+                query: { ticket_id: result.ticket_id }
+            }, '/success');
         } else {
-            alert('Failed to create ticket');
+            alert('Failed to create ticket. Please try again later.');
         }
         return; // Ensure the function returns after handling the response
     };
