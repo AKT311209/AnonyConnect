@@ -20,6 +20,7 @@ const ContactSection = () => {
         } else {
             alert('Failed to create ticket');
         }
+        return; // Ensure the function returns after handling the response
     };
 
     return (
