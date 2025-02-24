@@ -12,7 +12,11 @@ export default async function handler(req, res) {
     if (!ticket) {
       return res.status(404).json({ error: 'Ticket not found' });
     }
-    res.status(200).json(ticket);
+    const { message, password, ...nonSensitiveInfo } = ticket;
+    res.status(200).json({
+      ...nonSensitiveInfo,
+      password: password ? 'Yes' : 'No'
+    });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }

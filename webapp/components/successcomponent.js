@@ -39,7 +39,7 @@ const Success = ({ ticket }) => {
                     <li className="list-group-item"><span>Sender name:&nbsp;</span><span><strong>{ticket.sender_name || 'N/A'}</strong></span></li>
                     <li className="list-group-item"><span>Sender email:&nbsp;</span><span><strong>{ticket.sender_email || 'N/A'}</strong></span></li>
                     <li className="list-group-item"><span>Status:&nbsp;</span><span className={`${getStatusClass(ticket.status)} fw-bold`}><strong>{ticket.status}</strong></span></li>
-                    <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticket.password ? 'text-info' : 'text-danger'} fw-bold`}><strong>{ticket.password ? 'Yes' : 'No'}</strong></span></li>
+                    <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticket.password === 'Yes' ? 'text-info' : 'text-danger'} fw-bold`}><strong>{ticket.password}</strong></span></li>
                 </ul>
             </div>
         </section>
