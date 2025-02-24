@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useRouter } from 'next/router';
 
 const ContactSection = () => {
     const router = useRouter();
+    const toastRef = useRef(null);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
+
+        // Client-side validation for message length
+        if (data.message.length < 10) {
+            const toastElement = document.getElementById('toast-1');
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            return;
+        }
 
         const response = await fetch('/api/newticket', {
             method: 'POST',
@@ -102,6 +111,17 @@ const ContactSection = () => {
                                 <div className="mb-3 me-0 pe-0"><input className="form-control" type="password" name="password" placeholder="Password (optional)" /><small className="form-text ps-0 pb-0 me-5 pe-0" style={{ marginRight: '54px' }}>Create a password to prevent others from viewing your ticket.</small></div>
                                 <button className="btn btn-primary d-block w-100" type="submit">Send</button>
                             </form>
+                        </div>
+                    </div>
+                    <div ref={toastRef} className="toast-container top-0 end-0 p-3" style={{ position: 'fixed', display: 'flex' }}>
+                        <div className="toast fade hide" role="alert" data-bs-delay="3000" id="toast-1">
+                            <div className="toast-header">
+                                <strong className="text-danger me-auto">Message too short</strong>
+                                <button className="btn-close ms-2 mb-1 close" type="button" aria-label="Close" data-bs-dismiss="toast"></button>
+                            </div>
+                            <div className="toast-body" role="alert">
+                                <p>Please ensure the message is at least 10 characters long.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

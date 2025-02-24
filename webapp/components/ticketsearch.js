@@ -26,13 +26,13 @@ const TicketSearch = () => {
                     <div className="row mb-5">
                         <div className="col-md-8 col-xl-6 text-center mx-auto">
                             <h2 className="fw-bold text-primary">Contact tickets</h2>
-                            <p className="text-muted">Please enter your contact ticket id below to view your ticket.</p>
+                            <p className="text-muted">Please enter your contact ticket ID below to view your ticket.</p>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col mb-0 pb-0 mt-0 pt-0">
                             <form className="bg-transparent border-0 shadow-none search-form" onSubmit={handleSubmit}>
-                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none"><span className="border-0 shadow-sm input-group-text"><FontAwesomeIcon icon={faListAlt} /></span><input className="border-0 shadow-sm form-control" type="text" placeholder="Your ticket id (xxx-xxx)" required /><button className="btn btn-light border-0 shadow-sm" type="submit">View</button></div><div className="cf-turnstile" data-sitekey="<0x4AAAAAAA-RcQdPu6mWgu-p>"></div>
+                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none"><span className="border-0 shadow-sm input-group-text"><FontAwesomeIcon icon={faListAlt} /></span><input className="border-0 shadow-sm form-control" type="text" placeholder="Your ticket ID (xxx-xxx)" required /><button className="btn btn-light border-0 shadow-sm" type="submit">View</button></div><div className="cf-turnstile" data-sitekey="<0x4AAAAAAA-RcQdPu6mWgu-p>"></div>
                             </form>
                         </div>
                     </div>

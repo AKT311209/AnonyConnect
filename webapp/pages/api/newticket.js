@@ -10,6 +10,12 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { name, email, message, password } = req.body;
+
+      // Reject if message is shorter than 10 characters
+      if (message.length < 10) {
+        return res.status(400).json({ error: 'Message too short' });
+      }
+
       let ticket_id = generateTicketId();
       const status = 'Pending';
       const response = null;
