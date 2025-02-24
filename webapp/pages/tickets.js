@@ -1,14 +1,14 @@
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import TicketSearch from '../components/ticketsearch';
-import TicketSearchToast from '../components/ticketsearchtoast';
+import ToastMessage from '../components/ToastMessage';
 
 const TicketPage = () => {
   return (
         <>
             <NavBar />
             <TicketSearch />
-            <TicketSearchToast />
+            <ToastMessage header="Invalid ticket" body="The system could not find the provided ticket ID. Please try again." />
             <Footer />
         </>
   );
