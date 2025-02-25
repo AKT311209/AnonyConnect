@@ -32,6 +32,16 @@ const TicketDetail = ({ ticketData }) => {
     const formatDateTime = (dateTime) => {
         return moment.utc(dateTime).tz(moment.tz.guess()).format('DD-MM-YYYY HH:mm (UTC Z)');
     };
+
+    const getResponseMessage = (status, response) => {
+        if (status === 'Pending') {
+            return 'The admin has not responded yet. Please be patient.';
+        } else if (status === 'Rejected') {
+            return 'The admin has refused to respond.';
+        } else {
+            return response;
+        }
+    };
     
     return (
         <div className="container pb-5 mb-5 mt-5">
@@ -84,7 +94,7 @@ const TicketDetail = ({ ticketData }) => {
                                     </h2>
                                     <div className="accordion-collapse collapse show item-3" role="tabpanel">
                                         <div className="accordion-body">
-                                            <p className="mb-0">{ticketData.response || 'No response yet.'}</p>
+                                            <p className="mb-0">{getResponseMessage(ticketData.status, ticketData.response)}</p>
                                         </div>
                                     </div>
                                 </div>

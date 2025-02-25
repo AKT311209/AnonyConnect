@@ -19,4 +19,12 @@ Implementing database + insertion for new tickets - done.
 
 - 24/02/25:
 TODO INCLUDE CLOUDFLARE TURNSTILE FOR FORM PROTECTION - NOT WORKING PROPERLY!
-TODO Implement success form.
+Designing success form - Done.
+Implement database lookup for ticket detail - Done.
+Implement api endpoint to fetch the success info - Done.
+- 25/02/25:
+Implement the ticket detail page - Done.
+Implement the password form for authentication - Done.
+Implement API endpoint auth and fetching ticket detail - Done.
+TODO CREATE AUTH MECHANISM TO ENSURE TICKET DETAIL CAN ONLY BE FETCHED AFTER PASSWORD ENTERED.
+
