@@ -1,7 +1,7 @@
 import React from 'react';
 import Turnstile from 'react-turnstile';
 
-const Footer = () => {
+const TicketVerification = () => {
     return (
         <div className="container pb-5 mb-5 mt-5">
             <section className="py-5 pt-0">
@@ -30,4 +30,4 @@ const Footer = () => {
     );
 };
 
-export default Footer;
+export default TicketVerification;
