@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 const TicketDetail = ({ ticketData }) => {
     console.log('Rendering TicketDetail with data:', ticketData); // Debug log
     
-    const getStatusClass = (status) => {
+    const getStatusText = (status) => {
         switch (status) {
             case 'Rejected':
                 return 'text-danger';
@@ -17,6 +17,18 @@ const TicketDetail = ({ ticketData }) => {
         }
     };
 
+    const getStatusClass = (status) => {
+        switch (status) {
+            case 'Rejected':
+                return 'bg-danger';
+            case 'Responded':
+                return 'bg-success';
+            case 'Pending':
+                return 'bg-warning';
+            default:
+                return '';
+        }
+    };
     const formatDateTime = (dateTime) => {
         return moment.utc(dateTime).tz(moment.tz.guess()).format('DD-MM-YYYY HH:mm (UTC Z)');
     };
@@ -46,7 +58,7 @@ const TicketDetail = ({ ticketData }) => {
                                                 <li className="list-group-item"><span>Submission time:&nbsp;</span><span><strong>{formatDateTime(ticketData.created_at)}</strong></span></li>
                                                 <li className="list-group-item"><span>Sender name:&nbsp;</span><span><strong>{ticketData.sender_name || 'N/A'}</strong></span></li>
                                                 <li className="list-group-item"><span>Sender email:&nbsp;</span><span><strong>{ticketData.sender_email || 'N/A'}</strong></span></li>
-                                                <li className="list-group-item"><span>Status:&nbsp;</span><span className={`${getStatusClass(ticketData.status)} fw-bold`}><strong>{ticketData.status}</strong></span></li>
+                                                <li className="list-group-item"><span>Status:&nbsp;</span><span className={`${getStatusText(ticketData.status)} fw-bold`}><strong>{ticketData.status}</strong></span></li>
                                                 <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticketData.password ? 'text-info' : 'text-danger'} fw-bold`}><strong>{ticketData.password ? 'Yes' : 'No'}</strong></span></li>
                                             </ul>
                                         </div>
@@ -66,7 +78,7 @@ const TicketDetail = ({ ticketData }) => {
                                 </div>
                                 <div className="accordion-item">
                                     <h2 className="accordion-header" role="tab">
-                                        <button className="accordion-button bg-warning" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-3" aria-expanded="true" aria-controls="accordion-1 .item-3">
+                                        <button className={`accordion-button ${getStatusClass(ticketData.status)}`} type="button" data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-3" aria-expanded="true" aria-controls="accordion-1 .item-3">
                                             Response
                                         </button>
                                     </h2>
