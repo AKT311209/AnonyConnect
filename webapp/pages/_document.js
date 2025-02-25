@@ -9,7 +9,6 @@ export default function Document() {
         <link rel="stylesheet" href="assets/css/bs-theme-overrides.css" />
         <link rel="stylesheet" href="assets/css/Contact-Details-icons.css" />
         <link rel="stylesheet" href="assets/css/Pretty-Search-Form-.css" />
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
       </Head>
       <body>
         <Main />
