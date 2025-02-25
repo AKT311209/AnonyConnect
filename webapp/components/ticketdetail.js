@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment-timezone';
 
 const TicketDetail = ({ ticketData }) => {
-    console.log('Rendering TicketDetail with data:', ticketData); // Debug log
     
     const getStatusText = (status) => {
         switch (status) {

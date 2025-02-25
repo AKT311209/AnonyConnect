@@ -15,11 +15,9 @@ const TicketPage = () => {
 
     useEffect(() => {
         if (ticket_id) {
-            console.log('Fetching auth data for ticket_id:', ticket_id); // Debug log
             fetch(`/api/auth/${ticket_id}`)
                 .then(res => res.json())
                 .then(data => {
-                    console.log('Auth data:', data); // Debug log
                     if (data.passwordExists) {
                         setShowVerification(true);
                     } else {
@@ -33,7 +31,7 @@ const TicketPage = () => {
     const fetchTicketData = async () => {
         try {
             const storedPassword = sessionStorage.getItem('ticketPassword');
-            console.log('Fetching ticket data for ticket_id:', ticket_id); // Debug log
+            console.log('Fetching ticket data for ticket_id:', ticket_id); 
             const response = await fetch(`/api/message/${ticket_id}`, {
                 method: 'POST',
                 headers: {
