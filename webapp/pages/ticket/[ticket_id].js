@@ -43,6 +43,7 @@ const TicketPage = () => {
             });
             const data = await response.json();
             setTicketData(data);
+            sessionStorage.removeItem('ticketPassword'); // Clear password after fetching data
         } catch (error) {
             console.error('Error fetching ticket data', error);
         }
