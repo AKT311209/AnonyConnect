@@ -1,7 +1,26 @@
 import React from 'react';
+import moment from 'moment-timezone';
 
 const TicketDetail = ({ ticketData }) => {
     console.log('Rendering TicketDetail with data:', ticketData); // Debug log
+    
+    const getStatusClass = (status) => {
+        switch (status) {
+            case 'Rejected':
+                return 'text-danger';
+            case 'Responded':
+                return 'text-success';
+            case 'Pending':
+                return 'text-warning';
+            default:
+                return '';
+        }
+    };
+
+    const formatDateTime = (dateTime) => {
+        return moment.utc(dateTime).tz(moment.tz.guess()).format('DD-MM-YYYY HH:mm (UTC Z)');
+    };
+    
     return (
         <div className="container pb-5 mb-5 mt-5">
             <section className="py-5 pt-0">
@@ -24,11 +43,11 @@ const TicketDetail = ({ ticketData }) => {
                                         <div className="accordion-body">
                                             <ul className="list-group border rounded-0">
                                                 <li className="list-group-item"><span>Ticket ID:&nbsp;</span><span><strong>{ticketData.ticket_id}</strong></span></li>
-                                                <li className="list-group-item"><span>Submission time:&nbsp;</span><span><strong>{ticketData.created_at}</strong></span></li>
+                                                <li className="list-group-item"><span>Submission time:&nbsp;</span><span><strong>{formatDateTime(ticketData.created_at)}</strong></span></li>
                                                 <li className="list-group-item"><span>Sender name:&nbsp;</span><span><strong>{ticketData.sender_name || 'N/A'}</strong></span></li>
                                                 <li className="list-group-item"><span>Sender email:&nbsp;</span><span><strong>{ticketData.sender_email || 'N/A'}</strong></span></li>
-                                                <li className="list-group-item"><span>Status:&nbsp;</span><span className={`text-${ticketData.status === 'Pending' ? 'warning' : ticketData.status === 'Closed' ? 'success' : 'danger'}`}><strong>{ticketData.status}</strong></span></li>
-                                                <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`text-${ticketData.password ? 'danger' : 'success'}`}><strong>{ticketData.password ? 'Yes' : 'No'}</strong></span></li>
+                                                <li className="list-group-item"><span>Status:&nbsp;</span><span className={`${getStatusClass(ticketData.status)} fw-bold`}><strong>{ticketData.status}</strong></span></li>
+                                                <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticketData.password ? 'text-info' : 'text-danger'} fw-bold`}><strong>{ticketData.password ? 'Yes' : 'No'}</strong></span></li>
                                             </ul>
                                         </div>
                                     </div>
