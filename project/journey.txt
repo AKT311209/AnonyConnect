@@ -26,5 +26,8 @@ Implement api endpoint to fetch the success info - Done.
 Implement the ticket detail page - Done.
 Implement the password form for authentication - Done.
 Implement API endpoint auth and fetching ticket detail - Done.
-TODO CREATE AUTH MECHANISM TO ENSURE TICKET DETAIL CAN ONLY BE FETCHED AFTER PASSWORD ENTERED.
-
+Implement /message endpoint protection - Protected with password.
+- 26/02/25:
+Implement mechanism for accessing /ticket/[ticket_id] with invalid ticket_id
+TODO DESIGN 404 PAGE
+TODO CONDUCT TEST FOR PRIVACY
