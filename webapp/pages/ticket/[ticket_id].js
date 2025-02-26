@@ -18,7 +18,10 @@ const TicketPage = () => {
             fetch(`/api/auth/${ticket_id}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.passwordExists) {
+                    if (data.error === 'Ticket not found') {
+                        alert('Invalid ticket');
+                        router.push('/');
+                    } else if (data.passwordExists) {
                         setShowVerification(true);
                     } else {
                         setIsVerified(true); // Set isVerified to true if no password exists

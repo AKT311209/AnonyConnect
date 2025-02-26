@@ -34,7 +34,7 @@ const TicketDetail = ({ ticketData }) => {
 
     const getResponseMessage = (status, response) => {
         if (status === 'Pending') {
-            return 'The admin has not responded yet. Please be patient.';
+            return 'The admin has not responded yet.';
         } else if (status === 'Rejected') {
             return 'The admin has refused to respond.';
         } else {
