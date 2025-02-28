@@ -13,7 +13,7 @@ const TicketSearch = () => {
         const result = await response.json();
 
         if (result.exists) {
-            window.location.href = `/ticket/${ticketId}`;
+            window.location.href = `/ticket/${encodeURIComponent(ticketId)}`;
         } else {
             const toast = document.getElementById('toast-1');
             const bsToast = new bootstrap.Toast(toast);
