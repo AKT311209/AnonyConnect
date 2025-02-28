@@ -1,13 +1,23 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListAlt } from '@fortawesome/free-regular-svg-icons';
-import Turnstile from 'react-turnstile';
 
 const TicketSearch = () => {
+    const isValidTicketId = (id) => {
+        const ticketIdPattern = /^[a-z0-9]{3}-[a-z0-9]{3}$/; // Pattern for (xxx-xxx)
+        return ticketIdPattern.test(id);
+    };
     const handleSubmit = async (event) => {
         event.preventDefault();
         const ticketId = event.target.elements[0].value;
         const turnstileResponse = event.target.elements[1].value;
+
+        if (!isValidTicketId(ticketId)) {
+            const toast = document.getElementById('toast-1');
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            return;
+        }
 
         const response = await fetch(`/api/checkticket?ticket_id=${ticketId}&turnstile_response=${turnstileResponse}`);
         const result = await response.json();
