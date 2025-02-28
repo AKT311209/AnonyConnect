@@ -16,7 +16,17 @@ const SuccessPage = () => {
       return;
     }
 
+    const isValidTicketId = (id) => {
+      const ticketIdPattern = /^[a-z0-9]{3}-[a-z0-9]{3}$/; // Pattern for (xxx-xxx)
+      return ticketIdPattern.test(id);
+    };
+
     const fetchTicket = async () => {
+      if (!isValidTicketId(ticket_id)) {
+        alert('Invalid ticket ID format');
+        router.push('/');
+        return;
+      }
       const response = await fetch(`/api/success/${ticket_id}`);
       if (!response.ok) {
         alert('Ticket not found.');
