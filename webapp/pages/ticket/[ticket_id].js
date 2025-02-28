@@ -24,8 +24,18 @@ const TicketPage = () => {
         return decipher.update(text, 'hex', 'utf8') + decipher.final('utf8');
     };
 
+    const isValidTicketId = (id) => {
+        const ticketIdPattern = /^[a-z0-9]{3}-[a-z0-9]{3}$/; // Pattern for (xxx-xxx)
+        return ticketIdPattern.test(id);
+    };
+
     useEffect(() => {
         if (ticket_id) {
+            if (!isValidTicketId(ticket_id)) {
+                alert('Invalid ticket ID format');
+                router.push('/');
+                return;
+            }
             fetch(`/api/auth/${ticket_id}`)
                 .then(res => res.json())
                 .then(data => {
@@ -44,6 +54,11 @@ const TicketPage = () => {
 
     const fetchTicketData = async () => {
         try {
+            if (!isValidTicketId(ticket_id)) {
+                alert('Invalid ticket ID format');
+                router.push('/');
+                return;
+            }
             const storedPassword = decrypt(sessionStorage.getItem('ticketPassword'));
             console.log('Fetching ticket data for ticket_id:', ticket_id); 
             const response = await fetch(`/api/message/${ticket_id}`, {
@@ -63,6 +78,11 @@ const TicketPage = () => {
 
     const handleVerification = async (password) => {
         try {
+            if (!isValidTicketId(ticket_id)) {
+                alert('Invalid ticket ID format');
+                router.push('/');
+                return;
+            }
             const response = await fetch(`/api/auth/${ticket_id}`, {
                 method: 'POST',
                 headers: {
