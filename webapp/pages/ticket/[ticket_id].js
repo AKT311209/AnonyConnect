@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import crypto from 'crypto';
 import ToastMessage from '../../components/ToastMessage';
 import NavBar from '../../components/NavBar';
 import Footer from '../../components/Footer';
@@ -12,6 +13,16 @@ const TicketPage = () => {
     const [isVerified, setIsVerified] = useState(false);
     const [showVerification, setShowVerification] = useState(false);
     const [ticketData, setTicketData] = useState(null);
+
+    const encrypt = (text) => {
+        const cipher = crypto.createCipher('aes-256-ctr', 'password');
+        return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
+    };
+
+    const decrypt = (text) => {
+        const decipher = crypto.createDecipher('aes-256-ctr', 'password');
+        return decipher.update(text, 'hex', 'utf8') + decipher.final('utf8');
+    };
 
     useEffect(() => {
         if (ticket_id) {
@@ -33,7 +44,7 @@ const TicketPage = () => {
 
     const fetchTicketData = async () => {
         try {
-            const storedPassword = sessionStorage.getItem('ticketPassword');
+            const storedPassword = decrypt(sessionStorage.getItem('ticketPassword'));
             console.log('Fetching ticket data for ticket_id:', ticket_id); 
             const response = await fetch(`/api/message/${ticket_id}`, {
                 method: 'POST',
@@ -63,7 +74,7 @@ const TicketPage = () => {
             if (data.isValid) {
                 setIsVerified(true);
                 setShowVerification(false);
-                sessionStorage.setItem('ticketPassword', password); // Store password in sessionStorage
+                sessionStorage.setItem('ticketPassword', encrypt(password)); // Store encrypted password in sessionStorage
                 fetchTicketData();
             } else {
                 const toast = document.getElementById('toast-1');
