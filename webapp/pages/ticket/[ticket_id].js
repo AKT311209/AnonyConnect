@@ -7,6 +7,11 @@ import Footer from '../../components/Footer';
 import TicketVerification from '../../components/TicketVerificationForm';
 import TicketDetail from '../../components/ticketdetail';
 
+const isValidTicketId = (id) => {
+    const ticketIdPattern = /^[a-zA-Z0-9_-]+$/; // Adjust the pattern as needed
+    return ticketIdPattern.test(id);
+};
+
 const TicketPage = () => {
     const router = useRouter();
     const { ticket_id } = router.query;
@@ -25,7 +30,7 @@ const TicketPage = () => {
     };
 
     useEffect(() => {
-        if (ticket_id) {
+        if (ticket_id && isValidTicketId(ticket_id)) {
             fetch(`/api/auth/${ticket_id}`)
                 .then(res => res.json())
                 .then(data => {
@@ -39,6 +44,9 @@ const TicketPage = () => {
                         fetchTicketData();
                     }
                 });
+        } else {
+            alert('Invalid ticket ID format');
+            router.push('/');
         }
     }, [ticket_id]);
 
@@ -63,13 +71,29 @@ const TicketPage = () => {
 
     const handleVerification = async (password) => {
         try {
-            const response = await fetch(`/api/auth/${ticket_id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ password }),
-            });
+            if (isValidTicketId(ticket_id)) {
+                const response = await fetch(`/api/auth/${ticket_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password }),
+                });
+                const data = await response.json();
+                if (data.isValid) {
+                    setIsVerified(true);
+                    setShowVerification(false);
+                    sessionStorage.setItem('ticketPassword', encrypt(password)); // Store encrypted password in sessionStorage
+                    fetchTicketData();
+                } else {
+                    const toast = document.getElementById('toast-1');
+                    const bsToast = new bootstrap.Toast(toast);
+                    bsToast.show();
+                }
+            } else {
+                alert('Invalid ticket ID format');
+                router.push('/');
+            }
             const data = await response.json();
             if (data.isValid) {
                 setIsVerified(true);
