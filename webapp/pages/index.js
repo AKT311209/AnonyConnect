@@ -8,7 +8,6 @@ const HomePage = () => {
         <>
             <NavBar />
             <ContactSection />
-            <ToastMessage header="Message too short" body="Please ensure the message is at least 15 characters long." />
             <Footer />
         </>
   );
