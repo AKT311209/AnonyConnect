@@ -5,7 +5,7 @@ Coming up with project structure & plan
 
 - 22/02/25:
 Structure planning done.
-Start phase 1: UI Design.
+Start phase 1: Users interface Design + Backend.
 Prototyping contact page - done.
 
 - 23/02/25:
@@ -31,3 +31,13 @@ Implement /message endpoint protection - Protected with password.
 Implement mechanism for accessing /ticket/[ticket_id] with invalid ticket_id
 TODO DESIGN 404 PAGE
 TODO CONDUCT TEST FOR PRIVACY
+
+- 27/02/25:
+Fix security issues.
+----DONE PHASE 1: USER INTERFACE
+
+- 01/03/25: 
+Start phase 2: Admin Interface design and backend
+
+
+
