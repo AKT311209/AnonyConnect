@@ -11,8 +11,8 @@ export default async function handler(req, res) {
     try {
       const { name, email, message, password } = req.body;
 
-      // Reject if message is shorter than 10 characters
-      if (message.length < 10) {
+      // Reject if message is shorter than 15 characters
+      if (message.length < 15) {
         return res.status(400).json({ error: 'Message too short' });
       }
 

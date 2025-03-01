@@ -13,7 +13,7 @@ const ContactSection = () => {
         const data = Object.fromEntries(formData.entries());
 
         // Client-side validation for message length
-        if (data.message.length < 10) {
+        if (data.message.length < 15) {
             const toastElement = document.getElementById('toast-1');
             const toast = new bootstrap.Toast(toastElement);
             toast.show();
@@ -117,7 +117,7 @@ const ContactSection = () => {
                             </form>
                         </div>
                     </div>
-                    <ToastMessage header="Message too short" body="Please ensure the message is at least 10 characters long." />
+                    <ToastMessage header="Message too short" body="Please ensure the message is at least 15 characters long." />
                 </div>
             </div>
         </section>
