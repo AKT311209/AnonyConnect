@@ -47,6 +47,7 @@ const TicketPage = () => {
                     } else {
                         setIsVerified(true); // Set isVerified to true if no password exists
                         fetchTicketData();
+
                     }
                 });
         }
@@ -59,18 +60,28 @@ const TicketPage = () => {
                 router.push('/');
                 return;
             }
-            const storedPassword = decrypt(sessionStorage.getItem('ticketPassword'));
-            console.log('Fetching ticket data for ticket_id:', ticket_id); 
-            const response = await fetch(`/api/message/${ticket_id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ password: storedPassword }),
-            });
-            const data = await response.json();
-            setTicketData(data);
-            sessionStorage.removeItem('ticketPassword'); // Clear password after fetching data
+            if (sessionStorage.getItem('ticketPassword')) {
+                const storedPassword = decrypt(sessionStorage.getItem('ticketPassword'));
+                const response = await fetch(`/api/message/${ticket_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: storedPassword }),
+                });
+                const data = await response.json();
+                setTicketData(data);
+                sessionStorage.removeItem('ticketPassword'); // Clear password after fetching data
+            } else {
+                const response = await fetch(`/api/message/${ticket_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const data = await response.json();
+                setTicketData(data);
+            }
         } catch (error) {
             console.error('Error fetching ticket data', error);
         }
@@ -109,7 +120,7 @@ const TicketPage = () => {
     return (
         <>
             <NavBar />
-            
+
             <div>
                 {showVerification && !isVerified && (
                     <TicketVerification onVerify={handleVerification} />
