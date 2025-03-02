@@ -18,7 +18,10 @@ export default async function handler(req, res) {
                     return res.status(401).json({ error: 'Invalid password' });
                 }
             }
-            res.status(200).json(ticketData);
+            res.status(200).json({
+                ...ticketData,
+                password: password ? 'Yes' : 'No'
+              });
         } else {
             res.status(404).json({ error: 'Ticket not found' });
         }

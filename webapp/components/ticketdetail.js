@@ -68,7 +68,7 @@ const TicketDetail = ({ ticketData }) => {
                                                 <li className="list-group-item"><span>Sender name:&nbsp;</span><span><strong>{ticketData.sender_name || 'N/A'}</strong></span></li>
                                                 <li className="list-group-item"><span>Sender email:&nbsp;</span><span><strong>{ticketData.sender_email || 'N/A'}</strong></span></li>
                                                 <li className="list-group-item"><span>Status:&nbsp;</span><span className={`${getStatusText(ticketData.status)} fw-bold`}><strong>{ticketData.status}</strong></span></li>
-                                                <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticketData.password ? 'text-info' : 'text-danger'} fw-bold`}><strong>{ticketData.password ? 'Yes' : 'No'}</strong></span></li>
+                                                <li className="list-group-item"><span>Password-protected:&nbsp;</span><span className={`${ticketData.password === 'Yes' ? 'text-info' : 'text-danger'} fw-bold`}><strong>{ticketData.password}</strong></span></li>
                                             </ul>
                                         </div>
                                     </div>
