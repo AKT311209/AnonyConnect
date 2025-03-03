@@ -38,6 +38,8 @@ Fix security issues.
 
 - 01/03/25: 
 Start phase 2: Admin Interface design and backend
-
+Protyping Admin Login Interface - Done
+- 03/03/25:
+Protyping ticket detail page for Admin - Done.
 
 
