@@ -1,17 +1,17 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose()
+const path = require('path')
+const fs = require('fs')
 
-const storageDir = path.resolve(process.cwd(), 'storage');
+const storageDir = path.resolve(process.cwd(), 'storage')
 if (!fs.existsSync(storageDir)) {
-  fs.mkdirSync(storageDir);
+  fs.mkdirSync(storageDir)
 }
 
-const dbPath = path.resolve(storageDir, 'database.sqlite');
+const dbPath = path.resolve(storageDir, 'database.sqlite')
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    console.error('Error opening database', err);
+    console.error('Error opening database', err)
   } else {
     db.run(`CREATE TABLE IF NOT EXISTS tickets (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,46 +25,46 @@ const db = new sqlite3.Database(dbPath, (err) => {
       response TEXT
     )`, (err) => {
       if (err) {
-        console.error('Error creating table', err);
+        console.error('Error creating table', err)
       }
-    });
+    })
   }
-});
+})
 
-function createTicket(ticket_id, sender_name, sender_email, message, password, status, response, callback) {
-  const sql = `INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function(err) {
+function createTicket (ticket_id, sender_name, sender_email, message, password, status, response, callback) {
+  const sql = 'INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function (err) {
     if (err) {
-      return callback(err);
+      return callback(err)
     }
-    callback(null, { id: this.lastID });
-  });
+    callback(null, { id: this.lastID })
+  })
 }
 
-function checkDuplicateTicketId(ticket_id) {
+function checkDuplicateTicketId (ticket_id) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT COUNT(*) AS count FROM tickets WHERE ticket_id = ?`;
+    const sql = 'SELECT COUNT(*) AS count FROM tickets WHERE ticket_id = ?'
     db.get(sql, [ticket_id], (err, row) => {
       if (err) {
-        reject(err);
+        reject(err)
       } else {
-        resolve(row.count > 0);
+        resolve(row.count > 0)
       }
-    });
-  });
+    })
+  })
 }
 
-function getTicketById(ticket_id) {
+function getTicketById (ticket_id) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM tickets WHERE ticket_id = ?`;
+    const sql = 'SELECT * FROM tickets WHERE ticket_id = ?'
     db.get(sql, [ticket_id], (err, row) => {
       if (err) {
-        reject(err);
+        reject(err)
       } else {
-        resolve(row);
+        resolve(row)
       }
-    });
-  });
+    })
+  })
 }
 
 module.exports = {
@@ -72,4 +72,4 @@ module.exports = {
   createTicket,
   checkDuplicateTicketId,
   getTicketById
-};
+}
