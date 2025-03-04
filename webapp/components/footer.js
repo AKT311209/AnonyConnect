@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const Footer = () => {
   return (
@@ -7,7 +7,7 @@ const Footer = () => {
         <p style={{ marginBottom: '0' }}>Copyright © 2025 AnonyConnect</p>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer
