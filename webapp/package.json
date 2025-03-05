@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^14.6.1",
     "bcrypt": "^5.1.1",
     "better-sqlite3": "^11.8.1",
+    "cookie": "^1.0.2",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.47",
     "next": "^15.1.7",

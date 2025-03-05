@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { db } from '../../../lib/db';
 import { v4 as uuidv4 } from 'uuid';
-import cookie from 'cookie';
+import { serialize } from 'cookie';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -22,7 +22,7 @@ export default function handler(req, res) {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      res.setHeader('Set-Cookie', cookie.serialize('token', token, {
+      res.setHeader('Set-Cookie', serialize('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development',
         maxAge,
