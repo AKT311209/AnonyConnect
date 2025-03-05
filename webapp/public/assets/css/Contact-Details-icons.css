@@ -55,3 +55,19 @@
   border-radius: 50%;
 }
 
+textarea {
+  width: 100%;
+  font-family: Roboto, sans-serif;
+  color: rgb(103,100,96);
+  border-style: solid;
+  border-color: rgb(101,107,111);
+}
+
+div {
+  /*display: flex;*/
+}
+
+.btn {
+  gap: 10px;
+}
+

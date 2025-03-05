@@ -9,12 +9,17 @@ export default function Document() {
         <link rel="stylesheet" href="/assets/css/bs-theme-overrides.css" />
         <link rel="stylesheet" href="/assets/css/Contact-Details-icons.css" />
         <link rel="stylesheet" href="/assets/css/Pretty-Search-Form-.css" />
+        <link rel="stylesheet" href="/assets/css/custom.css" />
+        <link rel="stylesheet" href="/assets/css/Google-Style-Login-.css" />
+        <link rel="stylesheet" href="/assets/css/Table-With-Search.css" />
+        <link rel="stylesheet" href="/assets/css/Table-With-Search-search-table.css" />
       </Head>
       <body>
         <Main />
         <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="/assets/js/bs-init.js"></script>
         <script src="/assets/js/bold-and-bright.js"></script>
+        <script src="/assets/js/Table-With-Search-search-table.js"></script>
         <NextScript />
       </body>
     </Html>
