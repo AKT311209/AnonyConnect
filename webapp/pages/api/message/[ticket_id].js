@@ -18,14 +18,14 @@ export default async function handler(req, res) {
                     return res.status(401).json({ error: 'Invalid password' });
                 }
             }
-            res.status(200).json({
+            return res.status(200).json({
                 ...ticketData,
                 password: password ? 'Yes' : 'No'
               });
         } else {
-            res.status(404).json({ error: 'Ticket not found' });
+            return res.status(404).json({ error: 'Ticket not found' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

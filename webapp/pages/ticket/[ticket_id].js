@@ -29,6 +29,40 @@ const TicketPage = () => {
         return ticketIdPattern.test(id);
     };
 
+    const fetchTicketData = async () => {
+        try {
+            if (!isValidTicketId(ticket_id)) {
+                alert('Invalid ticket ID format');
+                router.push('/');
+                return;
+            }
+            if (sessionStorage.getItem('ticketPassword')) {
+                const storedPassword = decrypt(sessionStorage.getItem('ticketPassword'));
+                const response = await fetch(`/api/message/${ticket_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: storedPassword }),
+                });
+                const data = await response.json();
+                setTicketData(data);
+                sessionStorage.removeItem('ticketPassword'); // Clear password after fetching data
+            } else {
+                const response = await fetch(`/api/message/${ticket_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const data = await response.json();
+                setTicketData(data);
+            }
+        } catch (error) {
+            console.error('Error fetching ticket data', error);
+        }
+    };
+
     useEffect(() => {
         if (ticket_id) {
             if (!isValidTicketId(ticket_id)) {
@@ -52,8 +86,6 @@ const TicketPage = () => {
                 });
         }
     }, [ticket_id]);
-
-    const fetchTicketData = async () => {
         try {
             if (!isValidTicketId(ticket_id)) {
                 alert('Invalid ticket ID format');
