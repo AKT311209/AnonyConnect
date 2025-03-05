@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-const NavBar = () => {
+const AdminNavBar = () => {
   const router = useRouter();
 
   return (
@@ -49,4 +49,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default AdminNavBar;
