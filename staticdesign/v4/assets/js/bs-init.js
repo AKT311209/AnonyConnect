@@ -1,24 +1,22 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+  const toastTriggers = document.querySelectorAll('[data-bs-toggle="toast"]')
 
-	var toastTriggers = document.querySelectorAll('[data-bs-toggle="toast"]');
+  for (const toastTrigger of toastTriggers) {
+    toastTrigger.addEventListener('click', function () {
+      const toastSelector = toastTrigger.getAttribute('data-bs-target')
 
-	for (let toastTrigger of toastTriggers) {
-		toastTrigger.addEventListener('click', function () {
-			var toastSelector = toastTrigger.getAttribute('data-bs-target');
+      if (!toastSelector) return
 
-			if (!toastSelector) return;
+      try {
+        const toastEl = document.querySelector(toastSelector)
 
-			try {
-				var toastEl = document.querySelector(toastSelector);
+        if (!toastEl) return
 
-				if (!toastEl) return;
-
-				var toast = new bootstrap.Toast(toastEl);
-				toast.show();
-			}
-			catch(e) {
-				console.error(e);
-			}
-		})
-	}
-}, false);
+        const toast = new bootstrap.Toast(toastEl)
+        toast.show()
+      } catch (e) {
+        console.error(e)
+      }
+    })
+  }
+}, false)
