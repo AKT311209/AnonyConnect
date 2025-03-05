@@ -22,12 +22,14 @@ export default function handler(req, res) {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      res.setHeader('Set-Cookie', serialize('token', token, {
+      const cookie = serialize('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development',
         maxAge,
         path: '/',
-      }));
+      });
+
+      res.setHeader('Set-Cookie', cookie);
 
       return res.status(200).json({ sessionId });
     });

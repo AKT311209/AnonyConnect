@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 const AdminLoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(username, password);
+    onLogin(username, password, rememberMe);
   };
 
   return (
@@ -26,7 +27,7 @@ const AdminLoginForm = ({ onLogin }) => {
             <input className="form-control" type="password" id="inputPassword" required placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             <div className="checkbox">
               <div className="form-check mb-2 mt-2">
-                <input className="form-check-input" type="checkbox" id="formCheck-1" />
+                <input className="form-check-input" type="checkbox" id="formCheck-1" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
                 <label className="form-check-label" htmlFor="formCheck-1">Remember me</label>
               </div>
             </div>

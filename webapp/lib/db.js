@@ -35,7 +35,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
       username TEXT NOT NULL,
       token TEXT NOT NULL,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-      max_age INTEGER NOT NULL
+      max_age INTEGER NOT NULL,
+      invalidated INTEGER DEFAULT 0
     )`, (err) => {
       if (err) {
         console.error('Error creating sessions table', err);
@@ -82,12 +83,25 @@ function getTicketById(ticket_id) {
 
 function getSessionByToken(token) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM sessions WHERE token = ?`;
+    const sql = `SELECT * FROM sessions WHERE token = ? AND invalidated = 0`;
     db.get(sql, [token], (err, row) => {
       if (err) {
         reject(err);
       } else {
         resolve(row);
+      }
+    });
+  });
+}
+
+function invalidateSessionById(session_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE sessions SET invalidated = 1 WHERE session_id = ?`;
+    db.run(sql, [session_id], function(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(this.changes);
       }
     });
   });
@@ -127,6 +141,7 @@ module.exports = {
   checkDuplicateTicketId,
   getTicketById,
   getSessionByToken,
+  invalidateSessionById,
   deleteSessionById,
   deleteExpiredSessions
 };
