@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
 
-const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET);
 
 export async function middleware(req) {
   const { pathname, origin } = req.nextUrl;
@@ -13,7 +11,6 @@ export async function middleware(req) {
     }
 
     try {
-      const { payload } = await jwtVerify(token, secret);
       const validateSessionResponse = await fetch(`${origin}/api/admin/validate-session`, {
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +32,6 @@ export async function middleware(req) {
     }
 
     try {
-      const { payload } = await jwtVerify(token, secret);
       const validateSessionResponse = await fetch(`${origin}/api/admin/validate-session`, {
         headers: {
           'Content-Type': 'application/json',
