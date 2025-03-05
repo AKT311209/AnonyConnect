@@ -1,0 +1,26 @@
+.fixed-size-btn {
+  flex: 1;
+  justify-content: center;
+  width: 25%;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+  display: flex;
+}
+
+div {
+}
+
+.btn-group-equal {
+  flex: 0 0 15%;
+}
+
+.fixed-size-btn > .btn {
+  flex: 1;
+  min-width: 0;
+}
+
+.text-area-f {
+  height: 150px;
+}
+
