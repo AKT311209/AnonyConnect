@@ -3,11 +3,10 @@ import React, { useState } from 'react';
 const AdminLoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(username, password, rememberMe);
+    onLogin(username, password);
   };
 
   return (
@@ -19,7 +18,7 @@ const AdminLoginForm = ({ onLogin }) => {
           </div>
         </div>
         <div className="login-card mt-4 mb-4" style={{ boxShadow: '0px 0px' }}>
-          <img className="object-fit-fill profile-img-card" src="assets/img/profilepic.jpg" alt="Profile" />
+          <img className="object-fit-fill profile-img-card" src="/assets/img/profilepic.jpg" alt="Profile" />
           <p className="profile-name-card"> </p>
           <form className="form-signin" onSubmit={handleSubmit}>
             <span className="reauth-email"> </span>
@@ -27,7 +26,7 @@ const AdminLoginForm = ({ onLogin }) => {
             <input className="form-control" type="password" id="inputPassword" required placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             <div className="checkbox">
               <div className="form-check mb-2 mt-2">
-                <input className="form-check-input" type="checkbox" id="formCheck-1" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
+                <input className="form-check-input" type="checkbox" id="formCheck-1" />
                 <label className="form-check-label" htmlFor="formCheck-1">Remember me</label>
               </div>
             </div>

@@ -34,7 +34,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
       session_id TEXT NOT NULL,
       username TEXT NOT NULL,
       token TEXT NOT NULL,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      max_age INTEGER NOT NULL
     )`, (err) => {
       if (err) {
         console.error('Error creating sessions table', err);
@@ -105,11 +106,27 @@ function deleteSessionById(session_id) {
   });
 }
 
+function deleteExpiredSessions() {
+  const now = Math.floor(Date.now() / 1000);
+  const sql = `DELETE FROM sessions WHERE (strftime('%s', 'now') - strftime('%s', created_at)) > max_age`;
+  db.run(sql, [], function(err) {
+    if (err) {
+      console.error('Error deleting expired sessions', err);
+    } else {
+      console.log(`Deleted ${this.changes} expired sessions`);
+    }
+  });
+}
+
+// Schedule the deletion of expired sessions to run periodically
+setInterval(deleteExpiredSessions, 60 * 60 * 1000); // Run every hour
+
 module.exports = {
   db,
   createTicket,
   checkDuplicateTicketId,
   getTicketById,
   getSessionByToken,
-  deleteSessionById
+  deleteSessionById,
+  deleteExpiredSessions
 };
