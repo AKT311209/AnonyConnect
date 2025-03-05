@@ -81,43 +81,10 @@ const TicketPage = () => {
                     } else {
                         setIsVerified(true); // Set isVerified to true if no password exists
                         fetchTicketData();
-
                     }
                 });
         }
     }, [ticket_id]);
-        try {
-            if (!isValidTicketId(ticket_id)) {
-                alert('Invalid ticket ID format');
-                router.push('/');
-                return;
-            }
-            if (sessionStorage.getItem('ticketPassword')) {
-                const storedPassword = decrypt(sessionStorage.getItem('ticketPassword'));
-                const response = await fetch(`/api/message/${ticket_id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ password: storedPassword }),
-                });
-                const data = await response.json();
-                setTicketData(data);
-                sessionStorage.removeItem('ticketPassword'); // Clear password after fetching data
-            } else {
-                const response = await fetch(`/api/message/${ticket_id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                const data = await response.json();
-                setTicketData(data);
-            }
-        } catch (error) {
-            console.error('Error fetching ticket data', error);
-        }
-    };
 
     const handleVerification = async (password) => {
         try {
