@@ -8,7 +8,7 @@ export default async function handler(req, res) {
         const ticket = await getTicketById(ticket_id);
         if (ticket) {
             if (req.method === 'GET') {
-                res.status(200).json({ passwordExists: !!ticket.password });
+                res.status(200).json({ passwordExists: Boolean(ticket.password) });
             } else if (req.method === 'POST') {
                 const { password } = req.body;
                 const isValid = await bcrypt.compare(password, ticket.password);
