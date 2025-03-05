@@ -28,6 +28,18 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error creating table', err);
       }
     });
+
+    db.run(`CREATE TABLE IF NOT EXISTS sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id TEXT NOT NULL,
+      username TEXT NOT NULL,
+      token TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+      if (err) {
+        console.error('Error creating sessions table', err);
+      }
+    });
   }
 });
 
@@ -67,9 +79,37 @@ function getTicketById(ticket_id) {
   });
 }
 
+function getSessionByToken(token) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT * FROM sessions WHERE token = ?`;
+    db.get(sql, [token], (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+function deleteSessionById(session_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM sessions WHERE session_id = ?`;
+    db.run(sql, [session_id], function(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(this.changes);
+      }
+    });
+  });
+}
+
 module.exports = {
   db,
   createTicket,
   checkDuplicateTicketId,
-  getTicketById
+  getTicketById,
+  getSessionByToken,
+  deleteSessionById
 };
