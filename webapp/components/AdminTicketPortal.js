@@ -70,12 +70,12 @@ const AdminPortal = () => {
                 <table className="table table-hover table-bordered">
                   <thead className="bill-header cs">
                     <tr>
-                      <th id="trs-hd-1" className="col-lg-1" style={{ fontSize: '14px' }}>Ticket ID</th>
-                      <th id="trs-hd-2" className="col-lg-3" style={{ fontSize: '14px' }}>Submission time</th>
-                      <th id="trs-hd-3" className="col-lg-2" style={{ fontSize: '14px' }}>Sender name</th>
-                      <th id="trs-hd-4" className="col-lg-2" style={{ fontSize: '14px' }}>Sender email</th>
-                      <th id="trs-hd-5" className="col-lg-1" style={{ fontSize: '14px' }}>Status</th>
-                      <th id="trs-hd-6" className="col-lg-1" style={{ fontSize: '14px' }}>Action</th>
+                      <th id="trs-hd-1" className="col-lg-1" style={{ fontSize: '16px' }}>Ticket ID</th>
+                      <th id="trs-hd-2" className="col-lg-3" style={{ fontSize: '16px' }}>Submission time</th>
+                      <th id="trs-hd-3" className="col-lg-2" style={{ fontSize: '16px' }}>Sender name</th>
+                      <th id="trs-hd-4" className="col-lg-2" style={{ fontSize: '16px' }}>Sender email</th>
+                      <th id="trs-hd-5" className="col-lg-1" style={{ fontSize: '16px' }}>Status</th>
+                      <th id="trs-hd-6" className="col-lg-1" style={{ fontSize: '16px' }}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
