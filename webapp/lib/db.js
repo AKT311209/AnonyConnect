@@ -79,6 +79,19 @@ function getTicketById(ticket_id) {
   });
 }
 
+function getAllTickets() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT ticket_id, created_at, sender_name, sender_email, status FROM tickets`;
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 function getSessionById(session_id) {
   return new Promise((resolve, reject) => {
     const sql = `SELECT * FROM sessions WHERE session_id = ?`;
@@ -125,6 +138,7 @@ module.exports = {
   createTicket,
   checkDuplicateTicketId,
   getTicketById,
+  getAllTickets,
   getSessionById,
   deleteSessionById,
   deleteExpiredSessions

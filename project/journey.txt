@@ -43,5 +43,7 @@ Prototyping Admin Login Interface - Done
 Prototyping ticket detail page for Admin - Done.
 - 04/03/25:
 Prototyping tickets portal for Admin - Done.
+- 05/03/25:
+Implementing admin authentication for all admin pages and api endpoints.
 
 

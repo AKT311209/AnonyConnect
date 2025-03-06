@@ -5,7 +5,7 @@ import AdNav from '../../components/AdminNavbar';
 import Footer from '../../components/Footer';
 import ToastMessage from '../../components/ToastMessage';
 
-const HomePage = () => {
+const AdminLoginPage = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -46,4 +46,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default AdminLoginPage;

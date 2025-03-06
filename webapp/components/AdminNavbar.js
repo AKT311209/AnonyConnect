@@ -31,17 +31,18 @@ const AdminNavBar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navcol-1">
-          <ul className="navbar-nav mx-auto">
-            <li className="nav-item">
-              <Link href="/admin/management" legacyBehavior>
-                <a className={`nav-link ${router.pathname === '/admin/management' ? 'active' : ''}`}>Management</a>
-              </Link>
-            </li>
+          <ul className="navbar-nav mx-auto">            
             <li className="nav-item">
               <Link href="/admin/tickets" legacyBehavior>
                 <a className={`nav-link ${router.pathname === '/admin/tickets' ? 'active' : ''}`}>Tickets</a>
               </Link>
             </li>
+            <li className="nav-item">
+              <Link href="/admin/management" legacyBehavior>
+                <a className={`nav-link ${router.pathname === '/admin/management' ? 'active' : ''}`}>Management</a>
+              </Link>
+            </li>
+
           </ul>
         </div>
       </div>
