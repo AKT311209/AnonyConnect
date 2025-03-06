@@ -19,7 +19,6 @@ export default function Document() {
         <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="/assets/js/bs-init.js"></script>
         <script src="/assets/js/bold-and-bright.js"></script>
-        <script src="/assets/js/Table-With-Search-search-table.js"></script>
         <NextScript />
       </body>
     </Html>

@@ -58,10 +58,10 @@ const AdminPortal = () => {
           <div className="row">
             <div className="col-md-12 search-table-col pt-0 mt-0">
               <div>
-                <select onChange={handleSortChange}>
+                <select onChange={handleSortChange} value={sortBy}>
                   <optgroup label="Sort by...">
                     <option value="submission_time">Submission Time</option>
-                    <option value="status" selected>Ticket Status</option>
+                    <option value="status">Ticket Status</option>
                   </optgroup>
                 </select>
               </div>
