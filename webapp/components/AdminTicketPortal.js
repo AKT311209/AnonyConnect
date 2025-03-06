@@ -87,7 +87,7 @@ const AdminPortal = () => {
                         <td className="text-center" style={{ fontSize: '16px' }}>{ticket.sender_email || 'N/A'}</td>
                         <td className={`text-center ${getStatusClass(ticket.status)} fw-bold`} style={{ fontSize: '16px' }}>{ticket.status}</td>
                         <td className="text-center" style={{ textAlign: 'center' }}>
-                          <Link href={`/admin/ticket/${ticket.ticket_id}`}>
+                          <Link href={`/admin/ticket/${ticket.ticket_id}`} target="_blank" rel="noopener noreferrer">
                             <button className="btn btn-success border rounded border-1 mt-1" style={{ marginLeft: '5px', borderColor: 'var(--bs-primary)', background: 'var(--bs-primary)' }} type="button">
                               <svg className="bi bi-card-list text-light" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" style={{fontSize: '18px'}}>
                                 <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"></path>
