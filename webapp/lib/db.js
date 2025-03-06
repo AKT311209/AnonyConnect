@@ -33,7 +33,6 @@ const db = new sqlite3.Database(dbPath, (err) => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id TEXT NOT NULL,
       username TEXT NOT NULL,
-      token TEXT NOT NULL,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       max_age INTEGER NOT NULL
     )`, (err) => {
@@ -80,10 +79,10 @@ function getTicketById(ticket_id) {
   });
 }
 
-function getSessionByToken(token) {
+function getSessionById(session_id) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM sessions WHERE token = ?`;
-    db.get(sql, [token], (err, row) => {
+    const sql = `SELECT * FROM sessions WHERE session_id = ?`;
+    db.get(sql, [session_id], (err, row) => {
       if (err) {
         reject(err);
       } else {
@@ -126,7 +125,7 @@ module.exports = {
   createTicket,
   checkDuplicateTicketId,
   getTicketById,
-  getSessionByToken,
+  getSessionById,
   deleteSessionById,
   deleteExpiredSessions
 };

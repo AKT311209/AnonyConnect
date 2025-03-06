@@ -14,11 +14,12 @@ export default function handler(req, res) {
 
   if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
     const maxAge = rememberMe ? 30 * 24 * 60 * 60 : 60 * 60;
-    const token = jwt.sign({ username }, secret, { expiresIn: maxAge });
     const sessionId = uuidv4();
+    const token = jwt.sign({ username, sessionId }, secret, { expiresIn: maxAge });
 
-    db.run('INSERT INTO sessions (session_id, username, token, max_age) VALUES (?, ?, ?, ?)', [sessionId, username, token, maxAge], (err) => {
+    db.run('INSERT INTO sessions (session_id, username, max_age) VALUES (?, ?, ?)', [sessionId, username, maxAge], (err) => {
       if (err) {
+        console.error('Database error:', err); // Log the error for debugging
         return res.status(500).json({ error: 'Database error' });
       }
 
