@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import AdminLoginForm from '../../components/AdminLogin';
 import AdNav from '../../components/AdminNavbar';
 import Footer from '../../components/Footer';
@@ -6,6 +7,16 @@ import ToastMessage from '../../components/ToastMessage';
 
 const HomePage = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const res = await fetch('/api/admin/validate-session');
+      if (res.ok) {
+        router.push('/admin/tickets');
+      }
+    };
+    checkSession();
+  }, [router]);
 
   const handleLogin = async (username, password, rememberMe) => {
     const res = await fetch('/api/admin/login', {

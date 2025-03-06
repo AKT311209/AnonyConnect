@@ -19,7 +19,6 @@ export default function handler(req, res) {
 
     db.run('INSERT INTO sessions (session_id, username, max_age) VALUES (?, ?, ?)', [sessionId, username, maxAge], (err) => {
       if (err) {
-        console.error('Database error:', err); // Log the error for debugging
         return res.status(500).json({ error: 'Database error' });
       }
 
