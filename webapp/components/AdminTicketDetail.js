@@ -75,7 +75,7 @@ const AdTicketDetail = ({ ticketId }) => {
     }, []);
 
     if (!ticket) {
-        return <div>Loading...</div>;
+        return;
     }
 
     return (
