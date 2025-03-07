@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment-timezone';
+import ReactMarkdown from 'react-markdown';
 
 const TicketDetail = ({ ticketData }) => {
     
@@ -38,7 +39,7 @@ const TicketDetail = ({ ticketData }) => {
         } else if (status === 'Rejected') {
             return 'The admin has refused to respond.';
         } else {
-            return response;
+            return <ReactMarkdown>{response}</ReactMarkdown>;
         }
     };
     

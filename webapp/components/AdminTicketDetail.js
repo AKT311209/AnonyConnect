@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import moment from 'moment-timezone';
 import dynamic from 'next/dynamic';
+import ReactMarkdown from 'react-markdown';
 import "easymde/dist/easymde.min.css";
 
 const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false });
@@ -131,7 +132,7 @@ const AdTicketDetail = ({ ticketId }) => {
                                                     </div>
                                                 </div>
                                             ) : ticket.status === 'Responded' ? (
-                                                <p>{ticket.response}</p>
+                                                <ReactMarkdown>{ticket.response}</ReactMarkdown>
                                             ) : (
                                                 <p>You have rejected to answer to this message.</p>
                                             )}
