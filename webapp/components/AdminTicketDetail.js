@@ -85,6 +85,15 @@ const AdTicketDetail = ({ ticketId }) => {
         };
     }, []);
 
+    const formatMessage = (message) => {
+        return message.split('\n').map((line, index) => (
+            <span key={index}>
+                {line}
+                <br />
+            </span>
+        ));
+    };
+
     if (!ticket) {
         return null;
     }
@@ -120,7 +129,7 @@ const AdTicketDetail = ({ ticketId }) => {
                                     <h2 className="accordion-header" role="tab"><button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-2" aria-expanded="true" aria-controls="accordion-1 .item-2">Message</button></h2>
                                     <div className="accordion-collapse collapse show item-2" role="tabpanel">
                                         <div className="accordion-body">
-                                            <p className="mb-0 pt-0">{ticket.message}</p>
+                                            <p className="mb-0 pt-0">{formatMessage(ticket.message)}</p>
                                         </div>
                                     </div>
                                 </div>

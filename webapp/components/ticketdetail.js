@@ -42,6 +42,15 @@ const TicketDetail = ({ ticketData }) => {
             return <ReactMarkdown>{response}</ReactMarkdown>;
         }
     };
+
+    const formatMessage = (message) => {
+        return message.split('\n').map((line, index) => (
+            <span key={index}>
+                {line}
+                <br />
+            </span>
+        ));
+    };
     
     return (
         <div className="container pb-5 mb-5 mt-5">
@@ -82,7 +91,7 @@ const TicketDetail = ({ ticketData }) => {
                                     </h2>
                                     <div className="accordion-collapse collapse show item-2" role="tabpanel">
                                         <div className="accordion-body">
-                                            <p className="mb-0 pt-0">{ticketData.message}</p>
+                                            <p className="mb-0 pt-0">{formatMessage(ticketData.message)}</p>
                                         </div>
                                     </div>
                                 </div>
