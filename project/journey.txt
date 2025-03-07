@@ -47,4 +47,9 @@ Prototyping tickets portal for Admin - Done.
 Implementing admin authentication for all admin pages and api endpoints. - Done
 - 06/03/25:
 Implementing admin ticket portal - Done.
+- 07/03/25:
+Implementing admin ticket detail page - Done.
+Implementing the admin response - Done.
+Implementing Markdown support for response - Done.
+Contemplating whether to include markdown support for message
 
