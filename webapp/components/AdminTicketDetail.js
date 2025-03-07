@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import moment from 'moment-timezone';
+import dynamic from 'next/dynamic';
+import "easymde/dist/easymde.min.css";
+
+const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false });
 
 const AdTicketDetail = ({ ticketId }) => {
     const [ticket, setTicket] = useState(null);
@@ -16,8 +20,8 @@ const AdTicketDetail = ({ ticketId }) => {
         fetchTicketDetails();
     }, [ticketId]);
 
-    const handleResponseChange = (e) => {
-        setResponse(e.target.value);
+    const handleResponseChange = (value) => {
+        setResponse(value);
     };
 
     const handleRespond = async () => {
@@ -62,6 +66,12 @@ const AdTicketDetail = ({ ticketId }) => {
                 return '';
         }
     };
+
+    const simpleMDEOptions = useMemo(() => {
+        return {
+            placeholder: "Enter your response here...",
+        };
+    }, []);
 
     if (!ticket) {
         return <div>Loading...</div>;
@@ -108,7 +118,11 @@ const AdTicketDetail = ({ ticketId }) => {
                                         <div className="accordion-body">
                                             {ticket.status === 'Pending' ? (
                                                 <div className="pe-0 me-0">
-                                                    <textarea className="ms-0 me-0 text-area-f ps-2 pe-2 pb-0 mb-2" placeholder="Enter your response here..." style={{color: 'rgb(0,0,0)'}} value={response} onChange={handleResponseChange}></textarea>
+                                                    <SimpleMDE
+                                                        value={response}
+                                                        onChange={handleResponseChange}
+                                                        options={simpleMDEOptions}
+                                                    />
                                                     <div className="d-flex justify-content-end">
                                                         <div className="btn-group btn-group-equal" role="group">
                                                             <button className="btn border rounded-0 me-3 fixed-size-btn pe-4 ps-4" type="button" style={{background: 'var(--bs-danger)', color: 'var(--bs-gray-800)'}} onClick={handleReject}>Reject</button>
