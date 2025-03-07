@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import moment from 'moment-timezone';
 import dynamic from 'next/dynamic';
 import ReactMarkdown from 'react-markdown';
+import { useRouter } from 'next/router';
 import "easymde/dist/easymde.min.css";
 
 const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false });
@@ -9,17 +10,27 @@ const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false }
 const AdTicketDetail = ({ ticketId }) => {
     const [ticket, setTicket] = useState(null);
     const [response, setResponse] = useState('');
+    const router = useRouter();
 
     useEffect(() => {
         // Fetch ticket details from the database
         const fetchTicketDetails = async () => {
-            const res = await fetch(`/api/admin/tickets/fetch?ticketId=${ticketId}`);
-            const data = await res.json();
-            setTicket(data);
+            try {
+                const res = await fetch(`/api/admin/tickets/fetch?ticketId=${ticketId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setTicket(data);
+                } else {
+                    throw new Error('Invalid Ticket ID');
+                }
+            } catch (error) {
+                alert("Invalid Ticket ID");
+                router.push('/admin/tickets');
+            }
         };
 
         fetchTicketDetails();
-    }, [ticketId]);
+    }, [ticketId, router]);
 
     const handleResponseChange = (value) => {
         setResponse(value);
@@ -75,7 +86,7 @@ const AdTicketDetail = ({ ticketId }) => {
     }, []);
 
     if (!ticket) {
-        return;
+        return null;
     }
 
     return (
