@@ -8,7 +8,7 @@ const TicketDetail = ({ ticketData }) => {
             case 'Rejected':
                 return 'text-danger';
             case 'Responded':
-                return 'text-success';
+                return 'text-info';
             case 'Pending':
                 return 'text-warning';
             default:

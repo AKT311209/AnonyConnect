@@ -130,6 +130,47 @@ function deleteExpiredSessions() {
   });
 }
 
+function respondToTicket(ticketId, response) {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE tickets SET status = 'Responded', response = ? WHERE ticket_id = ?`;
+    db.run(sql, [response, ticketId], function(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+function rejectTicket(ticketId) {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE tickets SET status = 'Rejected' WHERE ticket_id = ?`;
+    db.run(sql, [ticketId], function(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+function fetchTicketDetails(ticketId) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT ticket_id, created_at, sender_name, sender_email, message, status, response, 
+                 CASE WHEN password IS NOT NULL THEN 'Yes' ELSE 'No' END AS password_protected 
+                 FROM tickets WHERE ticket_id = ?`;
+    db.get(sql, [ticketId], (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
 // Schedule the deletion of expired sessions to run periodically
 setInterval(deleteExpiredSessions, 60 * 60 * 1000); // Run every hour
 
@@ -141,5 +182,8 @@ module.exports = {
   getAllTickets,
   getSessionById,
   deleteSessionById,
-  deleteExpiredSessions
+  deleteExpiredSessions,
+  respondToTicket,
+  rejectTicket,
+  fetchTicketDetails
 };

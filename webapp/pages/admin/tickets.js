@@ -2,7 +2,7 @@ import AdminTicketPort from '../../components/AdminTicketPortal';
 import AdNav from '../../components/AdminNavbar';
 import Footer from '../../components/Footer';
 
-const AdminLoginPage = () => {
+const AdminDash = () => {
 
   return (
     <>
@@ -13,4 +13,4 @@ const AdminLoginPage = () => {
   );
 };
 
-export default AdminLoginPage;
+export default AdminDash;

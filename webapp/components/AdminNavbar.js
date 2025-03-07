@@ -7,7 +7,7 @@ const AdminNavBar = () => {
   return (
     <nav className="navbar navbar-expand-md sticky-top navbar-shrink py-3" id="mainNav">
       <div className="container">
-        <Link href="/" legacyBehavior>
+        <Link href="/admin" legacyBehavior>
           <a className="navbar-brand d-flex align-items-center">
             <span className="bs-icon-sm bs-icon-circle bs-icon-primary shadow d-flex justify-content-center align-items-center me-2 bs-icon">
               <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" height="1em" viewBox="0 0 24 24" width="1em" fill="currentColor">
