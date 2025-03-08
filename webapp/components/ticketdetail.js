@@ -46,10 +46,10 @@ const TicketDetail = ({ ticketData }) => {
 
     const formatMessage = (message) => {
         return message.split('\n').map((line, index) => (
-            <span key={index}>
+            <div key={index}>
                 {line}
                 <br />
-            </span>
+            </div>
         ));
     };
     
@@ -92,7 +92,7 @@ const TicketDetail = ({ ticketData }) => {
                                     </h2>
                                     <div className="accordion-collapse collapse show item-2" role="tabpanel">
                                         <div className="accordion-body">
-                                            <p className="mb-0 pt-0">{formatMessage(ticketData.message)}</p>
+                                            <div className="mb-0 pt-0">{formatMessage(ticketData.message)}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@ const TicketDetail = ({ ticketData }) => {
                                     </h2>
                                     <div className="accordion-collapse collapse show item-3" role="tabpanel">
                                         <div className="accordion-body">
-                                            <p className="mb-0">{getResponseMessage(ticketData.status, ticketData.response)}</p>
+                                            <div className="mb-0">{getResponseMessage(ticketData.status, ticketData.response)}</div>
                                         </div>
                                     </div>
                                 </div>
