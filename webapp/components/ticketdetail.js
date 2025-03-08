@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment-timezone';
 import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
 
 const TicketDetail = ({ ticketData }) => {
     
@@ -39,7 +40,7 @@ const TicketDetail = ({ ticketData }) => {
         } else if (status === 'Rejected') {
             return 'The admin has refused to respond.';
         } else {
-            return <ReactMarkdown>{response}</ReactMarkdown>;
+            return <ReactMarkdown remarkPlugins={[remarkBreaks]}>{response}</ReactMarkdown>;
         }
     };
 

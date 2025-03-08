@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import moment from 'moment-timezone';
 import dynamic from 'next/dynamic';
 import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
 import { useRouter } from 'next/router';
 import "easymde/dist/easymde.min.css";
 
@@ -82,6 +83,7 @@ const AdTicketDetail = ({ ticketId }) => {
     const simpleMDEOptions = useMemo(() => {
         return {
             placeholder: "Enter your response here...",
+            sideBySideFullscreen: false,
         };
     }, []);
 
@@ -152,7 +154,7 @@ const AdTicketDetail = ({ ticketId }) => {
                                                     </div>
                                                 </div>
                                             ) : ticket.status === 'Responded' ? (
-                                                <ReactMarkdown>{ticket.response}</ReactMarkdown>
+                                                <ReactMarkdown remarkPlugins={[remarkBreaks]}>{ticket.response}</ReactMarkdown>
                                             ) : (
                                                 <p>You have rejected to answer to this message.</p>
                                             )}
