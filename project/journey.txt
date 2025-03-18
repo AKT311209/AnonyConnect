@@ -51,5 +51,7 @@ Implementing admin ticket portal - Done.
 Implementing admin ticket detail page - Done.
 Implementing the admin response - Done.
 Implementing Markdown support for response - Done.
-Contemplating whether to include markdown support for message
+Contemplating whether to include markdown support for message - Postpone
+- 17/03/25:
+Planning for configuration file.
 
