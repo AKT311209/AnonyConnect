@@ -71,11 +71,13 @@ function runExec(sql, params = []) {
   });
 }
 
-function createTicket({ ticket_id, sender_name, sender_email, message, password, status, response }, callback) {
+function createTicket({ ticket_id, sender_name, sender_email, message, password, status, response }) {
   const sql = 'INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function(err) {
-    if (err) return callback(err);
-    return callback(null, { id: this.lastID });
+  return new Promise((resolve, reject) => {
+    db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function(err) {
+      if (err) return reject(err);
+      return resolve({ id: this.lastID });
+    });
   });
 }
 

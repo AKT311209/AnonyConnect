@@ -28,13 +28,20 @@ export default async function handler(req, res) {
       // Hash the password before saving
       const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
 
-      createTicket(ticket_id, name, email, message, hashedPassword, status, response, (err, result) => {
-        if (err) {
-          res.status(500).json({ error: 'Failed to create ticket' });
-        } else {
-          res.status(200).json({ ticket_id });
-        }
-      });
+      try {
+        await createTicket({
+          ticket_id,
+          sender_name: name,
+          sender_email: email,
+          message,
+          password: hashedPassword,
+          status,
+          response
+        });
+        res.status(200).json({ ticket_id });
+      } catch (err) {
+        res.status(500).json({ error: 'Failed to create ticket' });
+      }
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
