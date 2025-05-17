@@ -4,6 +4,42 @@ import dynamic from 'next/dynamic';
 import MonacoEditor from '@monaco-editor/react';
 import { useState, useRef, useEffect } from 'react';
 
+function ConfigEditor({ loading, config, setConfig, editorHeight, editorRef }) {
+  if (loading) return <div>Loading...</div>;
+  return (
+    <div style={{ border: '1px solid #333', borderRadius: 4, marginBottom: 8, background: '#fff', paddingTop: 8, paddingBottom: 8 }}>
+      <MonacoEditor
+        height={editorHeight}
+        language="json"
+        theme="vs-light"
+        value={config}
+        options={{ fontSize: 16, minimap: { enabled: false }, scrollBeyondLastLine: false, theme: 'vs-light', automaticLayout: true }}
+        onChange={setConfig}
+        onMount={(_, editor) => { editorRef.current = editor; }}
+      />
+    </div>
+  );
+}
+
+function ConfigStatus({ error, success }) {
+  return (
+    <>
+      {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
+      {success && <div style={{ color: 'green', marginTop: 8 }}>Saved!</div>}
+    </>
+  );
+}
+
+function ConfigFooter() {
+  return (
+    <footer className="text-center bg-primary-gradient mt-5" style={{ background: 'var(--bs-light)' }}>
+      <div className="container text-center py-4 py-lg-5 mt-0">
+        <p className="mb-0">Copyright © 2025 AnonyConnect</p>
+      </div>
+    </footer>
+  );
+}
+
 export default function AdminConfigLayout({
   loading,
   config,
@@ -48,23 +84,8 @@ export default function AdminConfigLayout({
             </div>
             <div className="row">
               <div className="col">
-                {loading ? (
-                  <div>Loading...</div>
-                ) : (
-                  <div style={{ border: '1px solid #333', borderRadius: 4, marginBottom: 8, background: '#fff', paddingTop: 8, paddingBottom: 8 }}>
-                    <MonacoEditor
-                      height={editorHeight}
-                      language="json"
-                      theme="vs-light"
-                      value={config}
-                      options={{ fontSize: 16, minimap: { enabled: false }, scrollBeyondLastLine: false, theme: 'vs-light', automaticLayout: true }}
-                      onChange={setConfig}
-                      onMount={(_, editor) => { editorRef.current = editor; }}
-                    />
-                  </div>
-                )}
-                {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
-                {success && <div style={{ color: 'green', marginTop: 8 }}>Saved!</div>}
+                <ConfigEditor loading={loading} config={config} setConfig={setConfig} editorHeight={editorHeight} editorRef={editorRef} />
+                <ConfigStatus error={error} success={success} />
                 <div className="d-flex justify-content-end">
                   <div className="btn-group btn-group-equal" role="group">
                     <button
@@ -86,11 +107,7 @@ export default function AdminConfigLayout({
           <header></header>
         </section>
       </div>
-      <footer className="text-center bg-primary-gradient mt-5" style={{ background: 'var(--bs-light)' }}>
-        <div className="container text-center py-4 py-lg-5 mt-0">
-          <p className="mb-0">Copyright © 2025 AnonyConnect</p>
-        </div>
-      </footer>
+      <ConfigFooter />
     </>
   );
 }

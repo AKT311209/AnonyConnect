@@ -1,50 +1,36 @@
 import { NextResponse } from 'next/server';
 
+async function validateSession(origin, token) {
+  try {
+    const res = await fetch(`${origin}/api/admin/validate-session`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cookie': `token=${token}`
+      }
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function middleware(req) {
   const { pathname, origin } = req.nextUrl;
   const token = req.cookies.get('token')?.value;
 
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  const needsAdminAuth = pathname.startsWith('/admin') && pathname !== '/admin/login';
+  const needsApiAuth = pathname.startsWith('/api/admin') && !['/api/admin/login', '/api/admin/validate-session'].includes(pathname);
+
+  if (needsAdminAuth || needsApiAuth) {
     if (!token) {
-      return NextResponse.redirect(`${origin}/admin/login`);
-    }
-
-    try {
-      const validateSessionResponse = await fetch(`${origin}/api/admin/validate-session`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': `token=${token}`
-        }
-      });
-
-      if (!validateSessionResponse.ok) {
-        return NextResponse.redirect(`${origin}/admin/login`);
-      }
-    } catch (err) {
-      return NextResponse.redirect(`${origin}/admin/login`);
-    }
-  }
-
-  if (pathname.startsWith('/api/admin') && pathname !== '/api/admin/login' && pathname !== '/api/admin/validate-session') {
-    if (!token) {
+      if (needsAdminAuth) return NextResponse.redirect(`${origin}/admin/login`);
       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
-
-    try {
-      const validateSessionResponse = await fetch(`${origin}/api/admin/validate-session`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': `token=${token}`
-        }
-      });
-
-      if (!validateSessionResponse.ok) {
-        return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
-      }
-    } catch (err) {
+    const valid = await validateSession(origin, token);
+    if (!valid) {
+      if (needsAdminAuth) return NextResponse.redirect(`${origin}/admin/login`);
       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
   }
-
   return NextResponse.next();
 }

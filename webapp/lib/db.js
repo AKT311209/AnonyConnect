@@ -23,9 +23,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
       password TEXT,
       status TEXT DEFAULT 'Pending',
       response TEXT
-    )`, (err) => {
-      if (err) {
-        console.error('Error creating table', err);
+    )`, (err2) => {
+      if (err2) {
+        console.error('Error creating table', err2);
       }
     });
 
@@ -35,184 +35,118 @@ const db = new sqlite3.Database(dbPath, (err) => {
       username TEXT NOT NULL,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       max_age INTEGER NOT NULL
-    )`, (err) => {
-      if (err) {
-        console.error('Error creating sessions table', err);
+    )`, (err3) => {
+      if (err3) {
+        console.error('Error creating sessions table', err3);
       }
     });
   }
 });
 
-function createTicket(ticket_id, sender_name, sender_email, message, password, status, response, callback) {
-  const sql = `INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+// Generic helpers
+function runGet(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
+  });
+}
+
+function runAll(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
+  });
+}
+
+function runExec(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function (err) {
+      if (err) reject(err);
+      else resolve(this.changes);
+    });
+  });
+}
+
+function createTicket({ ticket_id, sender_name, sender_email, message, password, status, response }, callback) {
+  const sql = 'INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)';
   db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function(err) {
-    if (err) {
-      return callback(err);
-    }
-    callback(null, { id: this.lastID });
+    if (err) return callback(err);
+    return callback(null, { id: this.lastID });
   });
 }
 
 function checkDuplicateTicketId(ticket_id) {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT COUNT(*) AS count FROM tickets WHERE ticket_id = ?`;
-    db.get(sql, [ticket_id], (err, row) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(row.count > 0);
-      }
-    });
-  });
+  return runGet('SELECT COUNT(*) AS count FROM tickets WHERE ticket_id = ?', [ticket_id])
+    .then(row => row.count > 0);
 }
 
 function getTicketById(ticket_id) {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM tickets WHERE ticket_id = ?`;
-    db.get(sql, [ticket_id], (err, row) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(row);
-      }
-    });
-  });
+  return runGet('SELECT * FROM tickets WHERE ticket_id = ?', [ticket_id]);
 }
 
 function getAllTickets() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT ticket_id, created_at, sender_name, sender_email, status FROM tickets`;
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-      }
-    });
-  });
+  return runAll('SELECT ticket_id, created_at, sender_name, sender_email, status FROM tickets');
 }
 
 function getSessionById(session_id) {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM sessions WHERE session_id = ?`;
-    db.get(sql, [session_id], (err, row) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(row);
-      }
-    });
-  });
+  return runGet('SELECT * FROM sessions WHERE session_id = ?', [session_id]);
 }
 
 function deleteSessionById(session_id) {
-  return new Promise((resolve, reject) => {
-    const sql = `DELETE FROM sessions WHERE session_id = ?`;
-    db.run(sql, [session_id], function(err) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(this.changes);
-      }
-    });
-  });
+  return runExec('DELETE FROM sessions WHERE session_id = ?', [session_id]);
 }
 
 function deleteExpiredSessions() {
-  const now = Math.floor(Date.now() / 1000);
-  const sql = `DELETE FROM sessions WHERE (strftime('%s', 'now') - strftime('%s', created_at)) > max_age`;
-  db.run(sql, [], function(err) {
+  const sql = "DELETE FROM sessions WHERE (strftime('%s', 'now') - strftime('%s', created_at)) > max_age";
+  db.run(sql, [], (err) => {
     if (err) {
-      console.error('Error deleting expired sessions', err);
-    } else {
-      console.log(`Deleted ${this.changes} expired sessions`);
+      if (typeof window === 'undefined') {
+        console.error('Error deleting expired sessions', err);
+      }
     }
   });
 }
 
 function respondToTicket(ticketId, response) {
-  return new Promise((resolve, reject) => {
-    const sql = `UPDATE tickets SET status = 'Responded', response = ? WHERE ticket_id = ?`;
-    db.run(sql, [response, ticketId], function(err) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  return runExec('UPDATE tickets SET status = \'Responded\', response = ? WHERE ticket_id = ?', [response, ticketId]);
 }
 
 function rejectTicket(ticketId) {
-  return new Promise((resolve, reject) => {
-    const sql = `UPDATE tickets SET status = 'Rejected' WHERE ticket_id = ?`;
-    db.run(sql, [ticketId], function(err) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  return runExec('UPDATE tickets SET status = \'Rejected\' WHERE ticket_id = ?', [ticketId]);
 }
 
 function fetchTicketDetails(ticketId) {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT ticket_id, created_at, sender_name, sender_email, message, status, response, 
-                 CASE WHEN password IS NOT NULL THEN 'Yes' ELSE 'No' END AS password_protected 
-                 FROM tickets WHERE ticket_id = ?`;
-    db.get(sql, [ticketId], (err, row) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(row);
-      }
-    });
-  });
+  return runGet('SELECT ticket_id, created_at, sender_name, sender_email, message, status, response, CASE WHEN password IS NOT NULL THEN \'Yes\' ELSE \'No\' END AS password_protected FROM tickets WHERE ticket_id = ?', [ticketId]);
 }
 
 // Utility to auto-reject and auto-cleanup tickets (for scheduled/cron use or API)
-function autoRejectAndCleanup(config, callback) {
-  const now = Math.floor(Date.now() / 1000);
-  let rejected = 0;
-  let deleted = 0;
-  // Auto Reject
-  if (config.autoReject?.enabled) {
-    console.log(`[TicketCleaner] Running auto-reject task at ${new Date().toISOString()}`);
-    const timeout = Number(config.autoReject.timeout) || 2592000;
-    db.all(`SELECT ticket_id, created_at FROM tickets WHERE status = 'Pending'`, [], async (err, rows) => {
-      if (err) return callback(err);
-      for (const row of rows) {
+async function autoRejectAndCleanup(config, callback) {
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    let rejected = 0;
+    let deleted = 0;
+    if (config.autoReject?.enabled) {
+      const timeout = Number(config.autoReject.timeout) || 2592000;
+      const pendingTickets = await runAll('SELECT ticket_id, created_at FROM tickets WHERE status = \'Pending\'');
+      for (const row of pendingTickets) {
         const created = Math.floor(new Date(row.created_at).getTime() / 1000);
         if (now - created > timeout) {
           await rejectTicket(row.ticket_id);
           rejected++;
         }
       }
-      // Auto Cleanup
-      if (config.autoCleanup?.enabled) {
-        console.log(`[TicketCleaner] Running auto-cleanup task at ${new Date().toISOString()}`);
-        const cleanupTimeout = Number(config.autoCleanup.timeout) || 2592000;
-        db.run(`DELETE FROM tickets WHERE (strftime('%s','now') - strftime('%s', created_at)) > ?`, [cleanupTimeout], function (cleanupErr) {
-          if (cleanupErr) return callback(cleanupErr);
-          deleted = this.changes;
-          callback(null, { rejected, deleted });
-        });
-      } else {
-        callback(null, { rejected });
-      }
-    });
-  } else if (config.autoCleanup?.enabled) {
-    // Only cleanup
-    console.log(`[TicketCleaner] Running auto-cleanup task at ${new Date().toISOString()}`);
-    const cleanupTimeout = Number(config.autoCleanup.timeout) || 2592000;
-    db.run(`DELETE FROM tickets WHERE (strftime('%s','now') - strftime('%s', created_at)) > ?`, [cleanupTimeout], function (cleanupErr) {
-      if (cleanupErr) return callback(cleanupErr);
-      deleted = this.changes;
-      callback(null, { deleted });
-    });
-  } else {
-    callback(null, { message: 'No action taken' });
+    }
+    if (config.autoCleanup?.enabled) {
+      const cleanupTimeout = Number(config.autoCleanup.timeout) || 2592000;
+      deleted = await runExec('DELETE FROM tickets WHERE (strftime(\'%s\',\'now\') - strftime(\'%s\', created_at)) > ?', [cleanupTimeout]);
+    }
+    callback(null, { rejected, deleted });
+  } catch (err) {
+    callback(err);
   }
 }
 
