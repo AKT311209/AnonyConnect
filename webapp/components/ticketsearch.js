@@ -23,7 +23,8 @@ const TicketSearch = () => {
         const result = await response.json();
 
         if (result.exists) {
-            window.location.href = `/ticket/${encodeURIComponent(ticketId)}`;
+            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin || 'http://localhost:3000';
+            window.location.href = `${baseUrl}/ticket/${encodeURIComponent(ticketId)}`;
         } else {
             const toast = document.getElementById('toast-1');
             const bsToast = new bootstrap.Toast(toast);

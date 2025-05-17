@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment-timezone';
 
 const Success = ({ ticket }) => {
-  const fullUrl = `${window.location.origin}/ticket/${ticket.ticket_id}`;
+  const fullUrl = `${process.env.NEXT_PUBLIC_BASE_URL || window.location.origin}/ticket/${ticket.ticket_id}`;
 
   const getStatusClass = (status) => {
     switch (status) {
