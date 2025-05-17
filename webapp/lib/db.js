@@ -219,33 +219,6 @@ function autoRejectAndCleanup(config, callback) {
 // Schedule the deletion of expired sessions to run periodically
 setInterval(deleteExpiredSessions, 60 * 60 * 1000); // Run every hour
 
-// Start background auto-reject and cleanup task
-(function startBackgroundTicketCleaner() {
-  const path = require('path');
-  const fs = require('fs');
-  const configPath = path.resolve(process.cwd(), 'storage', 'config.json');
-  function runCleaner() {
-    let config;
-    try {
-      const configRaw = fs.readFileSync(configPath, 'utf-8');
-      config = JSON.parse(configRaw);
-    } catch (e) {
-      console.error('[TicketCleaner] Failed to read config file:', e);
-      setTimeout(runCleaner, 60 * 60 * 1000); // 1 hour
-      return;
-    }
-    autoRejectAndCleanup(config, (err, result) => {
-      if (err) {
-        console.error('[TicketCleaner] Error:', err);
-      } else {
-        console.log(`[TicketCleaner ${new Date().toISOString()}]`, result);
-      }
-      setTimeout(runCleaner, 60 * 60 * 1000); // 1 hour
-    });
-  }
-  if (process.env.NODE_ENV !== 'test') runCleaner();
-})();
-
 module.exports = {
   db,
   createTicket,

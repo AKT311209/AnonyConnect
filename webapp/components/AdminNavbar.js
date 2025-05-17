@@ -42,7 +42,11 @@ const AdminNavBar = () => {
                 <a className={`nav-link ${router.pathname === '/admin/management' ? 'active' : ''}`}>Management</a>
               </Link>
             </li>
-
+            <li className="nav-item">
+              <Link href="/admin/configuration" legacyBehavior>
+                <a className={`nav-link ${router.pathname === '/admin/configuration' ? 'active' : ''}`}>Configuration</a>
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

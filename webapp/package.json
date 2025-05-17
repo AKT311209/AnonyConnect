@@ -28,9 +28,9 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/cron-tickets.js & next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/cron-tickets.js & next start",
     "lint": "next lint"
   },
   "eslintConfig": {

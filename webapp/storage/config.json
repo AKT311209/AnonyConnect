@@ -3,10 +3,8 @@
         "enabled": true,
         "timeout": 2592000
     },
-
     "autoCleanup": {
         "enabled": true,
         "timeout": 2592000
     }
-
 }
