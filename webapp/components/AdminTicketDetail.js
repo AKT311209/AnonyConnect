@@ -88,12 +88,41 @@ const AdTicketDetail = ({ ticketId }) => {
     }, []);
 
     const formatMessage = (message) => {
-        return message.split('\n').map((line, index) => (
-            <div key={index}>
-                {line}
-                <br />
+        return (
+            <div style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'pre-wrap',
+                maxWidth: '100%',
+                overflowX: 'auto',
+                padding: '8px',
+                background: '#f8f9fa',
+                borderRadius: '6px',
+                fontFamily: 'inherit',
+                fontSize: '1rem',
+            }}>
+                {message}
             </div>
-        ));
+        );
+    };
+
+    const formatResponse = (response) => {
+        return (
+            <div style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'pre-wrap',
+                maxWidth: '100%',
+                overflowX: 'auto',
+                padding: '8px',
+                background: '#f8f9fa',
+                borderRadius: '6px',
+                fontFamily: 'inherit',
+                fontSize: '1rem',
+            }}>
+                {response}
+            </div>
+        );
     };
 
     if (!ticket) {
@@ -154,7 +183,7 @@ const AdTicketDetail = ({ ticketId }) => {
                                                     </div>
                                                 </div>
                                             ) : ticket.status === 'Responded' ? (
-                                                <ReactMarkdown remarkPlugins={[remarkBreaks]}>{ticket.response}</ReactMarkdown>
+                                                formatResponse(ticket.response)
                                             ) : (
                                                 <p>You have rejected to answer to this message.</p>
                                             )}

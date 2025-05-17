@@ -34,23 +34,52 @@ const TicketDetail = ({ ticketData }) => {
         return moment.utc(dateTime).tz(moment.tz.guess()).format('DD-MM-YYYY HH:mm (UTC Z)');
     };
 
+    const formatResponse = (response) => {
+        return (
+            <div style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'pre-wrap',
+                maxWidth: '100%',
+                overflowX: 'auto',
+                padding: '8px',
+                background: '#f8f9fa',
+                borderRadius: '6px',
+                fontFamily: 'inherit',
+                fontSize: '1rem',
+            }}>
+                {response}
+            </div>
+        );
+    };
+
     const getResponseMessage = (status, response) => {
         if (status === 'Pending') {
             return 'The admin has not responded yet.';
         } else if (status === 'Rejected') {
             return 'The admin has refused to respond.';
         } else {
-            return <ReactMarkdown remarkPlugins={[remarkBreaks]}>{response}</ReactMarkdown>;
+            return formatResponse(response);
         }
     };
 
     const formatMessage = (message) => {
-        return message.split('\n').map((line, index) => (
-            <div key={index}>
-                {line}
-                <br />
+        return (
+            <div style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'pre-wrap',
+                maxWidth: '100%',
+                overflowX: 'auto',
+                padding: '8px',
+                background: '#f8f9fa',
+                borderRadius: '6px',
+                fontFamily: 'inherit',
+                fontSize: '1rem',
+            }}>
+                {message}
             </div>
-        ));
+        );
     };
     
     return (
