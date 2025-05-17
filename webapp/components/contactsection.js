@@ -12,11 +12,37 @@ const ContactSection = () => {
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
 
-        // Client-side validation for message length
-        if (data.message.length < 15) {
+        // Name and email length validation
+        if (data.name && data.name.length > 30) {
             const toastElement = document.getElementById('toast-1');
-            const toast = new bootstrap.Toast(toastElement);
-            toast.show();
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Input too long';
+                toastElement.querySelector('.toast-body p').textContent = 'Name cannot exceed 30 characters.';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
+            return;
+        }
+        if (data.email && data.email.length > 50) {
+            const toastElement = document.getElementById('toast-1');
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Input too long';
+                toastElement.querySelector('.toast-body p').textContent = 'Email cannot exceed 50 characters.';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
+            return;
+        }
+
+        // Client-side validation for message length
+        if (!data.message || data.message.length < 15) {
+            const toastElement = document.getElementById('toast-1');
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Message too short';
+                toastElement.querySelector('.toast-body p').textContent = 'Please ensure the message is at least 15 characters long.';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
             return;
         }
 
@@ -28,16 +54,33 @@ const ContactSection = () => {
             body: JSON.stringify(data),
         });
 
-        if (response.ok) {
-            const result = await response.json();
-            router.push({
-                pathname: '/success',
-                query: { ticket_id: result.ticket_id }
-            }, '/success');
-        } else {
-            alert('Failed to create ticket. Please try again later.');
+        if (response.status === 413) {
+            const toastElement = document.getElementById('toast-1');
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Input too long';
+                toastElement.querySelector('.toast-body p').textContent = 'Name or email cannot exceed their character limits.';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
+            return;
         }
-        return; // Ensure the function returns after handling the response
+
+        if (!response.ok) {
+            const toastElement = document.getElementById('toast-1');
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Submission failed';
+                toastElement.querySelector('.toast-body p').textContent = 'Failed to create ticket. Please try again later.';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
+            return;
+        }
+
+        const result = await response.json();
+        router.push({
+            pathname: '/success',
+            query: { ticket_id: result.ticket_id }
+        }, '/success');
     };
 
     return (

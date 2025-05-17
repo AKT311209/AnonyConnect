@@ -17,6 +17,11 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Message too short' });
       }
 
+      // Reject if name or email is too long
+      if ((name && name.length > 25) || (email && email.length > 25)) {
+        return res.status(413).json({ error: 'Name or email too long' });
+      }
+
       let ticket_id = generateTicketId();
       const status = 'Pending';
       const response = null;
