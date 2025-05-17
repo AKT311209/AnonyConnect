@@ -23,7 +23,7 @@ function runLoop() {
       console.log(`[${new Date().toISOString()}] Auto-reject/cleanup result:`, result);
     }
     // Run again after 1 hour
-    setTimeout(runLoop, 60 * 60 * 1000);
+    setTimeout(runLoop, 1000 * 60 * 60);
   });
 }
 
