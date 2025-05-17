@@ -35,14 +35,26 @@ async function sendTelegramNotification(ticket_id, name, email, message) {
     // Use 'N/A' if name or email is empty
     const safeName = name?.trim() ? name : 'N/A';
     const safeEmail = email?.trim() ? email : 'N/A';
-    const ticketInfo = `ID: ${ticket_id}\nName: ${safeName}\nEmail: ${safeEmail}\nMessage: \n${message}`;
+    // Trim message to 100 chars, but keep last word full
+    let trimmedMessage = message;
+    if (message && message.length > 100) {
+      let cut = message.slice(0, 100);
+      // If the 100th char is not a space and not the end, backtrack to last space
+      if (message[100] && message[100] !== ' ' && cut.lastIndexOf(' ') > 0) {
+        cut = cut.slice(0, cut.lastIndexOf(' '));
+      }
+      trimmedMessage = `${cut}...`;
+    }
+    // Bold the content using Markdown (Telegram supports *bold* with Markdown)
+    const ticketInfo = `ID: *${ticket_id}*\nName: *${safeName}*\nEmail: *${safeEmail}*\nMessage:\n*${trimmedMessage}*`;
     try {
       await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: chatId,
-          text: `New ticket received on AnonyConnect:\n${ticketInfo}`
+          text: `New ticket received on *AnonyConnect*:\n${ticketInfo}`,
+          parse_mode: 'Markdown'
         })
       });
     } catch (err) {
