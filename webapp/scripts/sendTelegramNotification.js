@@ -39,7 +39,7 @@ async function sendTelegramNotification(ticket_id, name, email, message) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: chatId,
-          text: `New ticket received:\n${ticketInfo}`
+          text: `New ticket received on AnonyConnect:\n${ticketInfo}`
         })
       });
     } catch (err) {
