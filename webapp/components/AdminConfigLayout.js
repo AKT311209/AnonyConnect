@@ -19,7 +19,11 @@ function ConfigEditor({ loading, config, setConfig, editorHeight, editorRef }) {
           minimap: { enabled: false }, 
           scrollBeyondLastLine: false, 
           theme: 'vs-light', 
-          automaticLayout: true 
+          automaticLayout: true,
+          // Fix: allow page scroll when mouse is over editor
+          scrollbar: { alwaysConsumeMouseWheel: false },
+          mouseWheelScrollSensitivity: 1,
+          mouseWheelZoom: false
         }}
         onChange={setConfig}
         onMount={(_, editor) => { editorRef.current = editor; }}
