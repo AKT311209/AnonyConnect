@@ -171,8 +171,80 @@ function fetchTicketDetails(ticketId) {
   });
 }
 
+// Utility to auto-reject and auto-cleanup tickets (for scheduled/cron use or API)
+function autoRejectAndCleanup(config, callback) {
+  const now = Math.floor(Date.now() / 1000);
+  let rejected = 0;
+  let deleted = 0;
+  // Auto Reject
+  if (config.autoReject?.enabled) {
+    console.log(`[TicketCleaner] Running auto-reject task at ${new Date().toISOString()}`);
+    const timeout = Number(config.autoReject.timeout) || 2592000;
+    db.all(`SELECT ticket_id, created_at FROM tickets WHERE status = 'Pending'`, [], async (err, rows) => {
+      if (err) return callback(err);
+      for (const row of rows) {
+        const created = Math.floor(new Date(row.created_at).getTime() / 1000);
+        if (now - created > timeout) {
+          await rejectTicket(row.ticket_id);
+          rejected++;
+        }
+      }
+      // Auto Cleanup
+      if (config.autoCleanup?.enabled) {
+        console.log(`[TicketCleaner] Running auto-cleanup task at ${new Date().toISOString()}`);
+        const cleanupTimeout = Number(config.autoCleanup.timeout) || 2592000;
+        db.run(`DELETE FROM tickets WHERE (strftime('%s','now') - strftime('%s', created_at)) > ?`, [cleanupTimeout], function (cleanupErr) {
+          if (cleanupErr) return callback(cleanupErr);
+          deleted = this.changes;
+          callback(null, { rejected, deleted });
+        });
+      } else {
+        callback(null, { rejected });
+      }
+    });
+  } else if (config.autoCleanup?.enabled) {
+    // Only cleanup
+    console.log(`[TicketCleaner] Running auto-cleanup task at ${new Date().toISOString()}`);
+    const cleanupTimeout = Number(config.autoCleanup.timeout) || 2592000;
+    db.run(`DELETE FROM tickets WHERE (strftime('%s','now') - strftime('%s', created_at)) > ?`, [cleanupTimeout], function (cleanupErr) {
+      if (cleanupErr) return callback(cleanupErr);
+      deleted = this.changes;
+      callback(null, { deleted });
+    });
+  } else {
+    callback(null, { message: 'No action taken' });
+  }
+}
+
 // Schedule the deletion of expired sessions to run periodically
 setInterval(deleteExpiredSessions, 60 * 60 * 1000); // Run every hour
+
+// Start background auto-reject and cleanup task
+(function startBackgroundTicketCleaner() {
+  const path = require('path');
+  const fs = require('fs');
+  const configPath = path.resolve(process.cwd(), 'storage', 'config.json');
+  function runCleaner() {
+    let config;
+    try {
+      const configRaw = fs.readFileSync(configPath, 'utf-8');
+      config = JSON.parse(configRaw);
+    } catch (e) {
+      console.error('[TicketCleaner] Failed to read config file:', e);
+      setTimeout(runCleaner, 60 * 60 * 1000); // 1 hour
+      return;
+    }
+    autoRejectAndCleanup(config, (err, result) => {
+      if (err) {
+        console.error('[TicketCleaner] Error:', err);
+      } else {
+        console.log(`[TicketCleaner ${new Date().toISOString()}]`, result);
+      }
+      setTimeout(runCleaner, 60 * 60 * 1000); // 1 hour
+    });
+  }
+  if (process.env.NODE_ENV !== 'test') runCleaner();
+})();
 
 module.exports = {
   db,
@@ -185,5 +257,6 @@ module.exports = {
   deleteExpiredSessions,
   respondToTicket,
   rejectTicket,
-  fetchTicketDetails
+  fetchTicketDetails,
+  autoRejectAndCleanup
 };
