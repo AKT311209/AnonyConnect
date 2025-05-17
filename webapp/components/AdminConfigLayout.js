@@ -7,13 +7,20 @@ import { useState, useRef, useEffect } from 'react';
 function ConfigEditor({ loading, config, setConfig, editorHeight, editorRef }) {
   if (loading) return <div>Loading...</div>;
   return (
-    <div style={{ border: '1px solid #333', borderRadius: 4, marginBottom: 8, background: '#fff', paddingTop: 8, paddingBottom: 8 }}>
+    <div style={{ border: '1.5px solid #aab3b9', borderRadius: 6, marginBottom: 8, background: '#fff', paddingTop: 8, paddingBottom: 8 }}>
       <MonacoEditor
         height={editorHeight}
         language="json"
         theme="vs-light"
         value={config}
-        options={{ fontSize: 16, minimap: { enabled: false }, scrollBeyondLastLine: false, theme: 'vs-light', automaticLayout: true }}
+        options={{ 
+          fontSize: 16, 
+          fontFamily: 'Roboto, monospace', 
+          minimap: { enabled: false }, 
+          scrollBeyondLastLine: false, 
+          theme: 'vs-light', 
+          automaticLayout: true 
+        }}
         onChange={setConfig}
         onMount={(_, editor) => { editorRef.current = editor; }}
       />
