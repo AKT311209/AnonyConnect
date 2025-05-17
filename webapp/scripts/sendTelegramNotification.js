@@ -32,7 +32,10 @@ async function sendTelegramNotification(ticket_id, name, email, message) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (botToken && chatId) {
-    const ticketInfo = `ID: ${ticket_id}\nName: ${name}\nEmail: ${email}\nMessage: ${message}`;
+    // Use 'N/A' if name or email is empty
+    const safeName = name?.trim() ? name : 'N/A';
+    const safeEmail = email?.trim() ? email : 'N/A';
+    const ticketInfo = `ID: ${ticket_id}\nName: ${safeName}\nEmail: ${safeEmail}\nMessage: ${message}`;
     try {
       await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
