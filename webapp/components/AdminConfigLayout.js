@@ -1,5 +1,9 @@
 // AdminConfigLayout.js
 // Layout and presentational component for the admin configuration page
+import dynamic from 'next/dynamic';
+import MonacoEditor from '@monaco-editor/react';
+import { useState, useRef, useEffect } from 'react';
+
 export default function AdminConfigLayout({
   loading,
   config,
@@ -9,6 +13,17 @@ export default function AdminConfigLayout({
   success,
   handleSave
 }) {
+  const [editorHeight, setEditorHeight] = useState(250);
+  const editorRef = useRef(null);
+
+  // Adjust height based on content
+  useEffect(() => {
+    if (editorRef.current) {
+      const lineCount = config ? config.split('\n').length : 1;
+      setEditorHeight(Math.max(150, Math.min(lineCount * 24 + 24, 600)));
+    }
+  }, [config]);
+
   return (
     <>
       <div className="container pb-5 mb-5 mt-5">
@@ -24,12 +39,17 @@ export default function AdminConfigLayout({
                 {loading ? (
                   <div>Loading...</div>
                 ) : (
-                  <textarea
-                    value={config}
-                    onChange={e => setConfig(e.target.value)}
-                    style={{ width: '100%', height: 180, fontSize: 18, fontFamily: 'monospace', border: '1px solid #333', borderRadius: 4, padding: 8 }}
-                    disabled={saving}
-                  />
+                  <div style={{ border: '1px solid #333', borderRadius: 4, marginBottom: 8, background: '#fff', paddingTop: 8, paddingBottom: 8 }}>
+                    <MonacoEditor
+                      height={editorHeight}
+                      language="json"
+                      theme="vs-light"
+                      value={config}
+                      options={{ fontSize: 16, minimap: { enabled: false }, scrollBeyondLastLine: false, theme: 'vs-light', automaticLayout: true }}
+                      onChange={setConfig}
+                      onMount={(_, editor) => { editorRef.current = editor; }}
+                    />
+                  </div>
                 )}
                 {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
                 {success && <div style={{ color: 'green', marginTop: 8 }}>Saved!</div>}
