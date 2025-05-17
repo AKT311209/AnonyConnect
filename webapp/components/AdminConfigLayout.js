@@ -24,6 +24,18 @@ export default function AdminConfigLayout({
     }
   }, [config]);
 
+  const handleSaveTrim = async () => {
+    // Remove trailing whitespace from each line and trim file
+    const trimmedConfig = config
+      .split('\n')
+      .map(line => line.replace(/\s+$/g, ''))
+      .join('\n')
+      .replace(/\n+$/g, '')
+      .trim();
+    setConfig(trimmedConfig);
+    await handleSave();
+  };
+
   return (
     <>
       <div className="container pb-5 mb-5 mt-5">
@@ -59,7 +71,7 @@ export default function AdminConfigLayout({
                       className="btn border rounded-0 fixed-size-btn pe-4 ps-4 me-0 ms-4 mt-2"
                       type="button"
                       style={{ background: 'var(--bs-primary)', color: 'var(--bs-light)', fontSize: 14 }}
-                      onClick={handleSave}
+                      onClick={handleSaveTrim}
                       disabled={saving || loading}
                     >
                       Save
