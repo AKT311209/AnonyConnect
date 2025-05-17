@@ -1,5 +1,6 @@
 import { createTicket, checkDuplicateTicketId } from '../../lib/db';
 import bcrypt from 'bcrypt';
+import sendTelegramNotification from '../../scripts/sendTelegramNotification';
 
 function generateTicketId() {
   const randomString = () => Math.random().toString(36).substring(2, 5);
@@ -38,6 +39,8 @@ export default async function handler(req, res) {
           status,
           response
         });
+        // Notify via Telegram directly from server
+        await sendTelegramNotification(ticket_id, name, email, message);
         res.status(200).json({ ticket_id });
       } catch (err) {
         res.status(500).json({ error: 'Failed to create ticket' });

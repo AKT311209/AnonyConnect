@@ -33,10 +33,22 @@ function ConfigEditor({ loading, config, setConfig, editorHeight, editorRef }) {
 }
 
 function ConfigStatus({ error, success }) {
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    if (success) {
+      setShow(true);
+      const timer = setTimeout(() => setShow(false), 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setShow(true);
+    }
+  }, [success]);
+
   return (
     <>
       {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
-      {success && <div style={{ color: 'green', marginTop: 8 }}>Saved!</div>}
+      {success && show && <div style={{ color: 'green', marginTop: 8, fontWeight: 'bold' }}>Saved!</div>}
     </>
   );
 }
