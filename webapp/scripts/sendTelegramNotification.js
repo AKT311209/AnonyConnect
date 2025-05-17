@@ -35,12 +35,12 @@ async function sendTelegramNotification(ticket_id, name, email, message) {
     // Use 'N/A' if name or email is empty
     const safeName = name?.trim() ? name : 'N/A';
     const safeEmail = email?.trim() ? email : 'N/A';
-    // Trim message to 100 chars, but keep last word full
+    // Trim message to 1000 chars, but keep last word full
     let trimmedMessage = message;
-    if (message && message.length > 100) {
-      let cut = message.slice(0, 100);
-      // If the 100th char is not a space and not the end, backtrack to last space
-      if (message[100] && message[100] !== ' ' && cut.lastIndexOf(' ') > 0) {
+    if (message && message.length > 1000) {
+      let cut = message.slice(0, 1000);
+      // If the 1000th char is not a space and not the end, backtrack to last space
+      if (message[1000] && message[1000] !== ' ' && cut.lastIndexOf(' ') > 0) {
         cut = cut.slice(0, cut.lastIndexOf(' '));
       }
       trimmedMessage = `${cut}...`;
