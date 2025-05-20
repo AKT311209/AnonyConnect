@@ -1,7 +1,7 @@
 import React from 'react';
-import NavBar from './components/NavBar';
-import ContactSection from './components/ContactSection';
-import Footer from './components/Footer';
+import NavBar from './components/navbar';
+import ContactSection from './components/contactsection';
+import Footer from './components/footer';
 
 const App = () => {
   return (

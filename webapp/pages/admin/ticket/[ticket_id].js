@@ -1,6 +1,6 @@
 import AdTicketDetail from '../../../components/AdminTicketDetail';
 import AdNav from '../../../components/AdminNavbar';
-import Footer from '../../../components/Footer';
+import Footer from '../../../components/footer';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 

@@ -1,5 +1,5 @@
-import NavBar from '../components/NavBar';
-import Footer from '../components/Footer';
+import NavBar from '../components/navbar';
+import Footer from '../components/footer';
 import TicketSearch from '../components/ticketsearch';
 import ToastMessage from '../components/ToastMessage';
 

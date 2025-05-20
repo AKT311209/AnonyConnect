@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import crypto from 'crypto';
 import ToastMessage from '../../components/ToastMessage';
-import NavBar from '../../components/NavBar';
-import Footer from '../../components/Footer';
-import TicketVerification from '../../components/TicketVerificationForm';
+import NavBar from '../../components/navbar';
+import Footer from '../../components/footer';
+import TicketVerification from '../../components/ticketverificationform';
 import TicketDetail from '../../components/ticketdetail';
 
 const TicketPage = () => {

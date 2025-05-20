@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import AdminLoginForm from '../../components/AdminLogin';
 import AdNav from '../../components/AdminNavbar';
-import Footer from '../../components/Footer';
+import Footer from '../../components/footer';
 import ToastMessage from '../../components/ToastMessage';
 
 const AdminLoginPage = () => {

@@ -1,6 +1,6 @@
-import NavBar from '../components/NavBar';
-import Footer from '../components/Footer';
-import ContactSection from '../components/ContactSection';
+import NavBar from '../components/navbar';
+import Footer from '../components/footer';
+import ContactSection from '../components/contactsection';
 import ToastMessage from '../components/ToastMessage';
 
 const HomePage = () => {

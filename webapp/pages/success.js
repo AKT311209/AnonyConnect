@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import NavBar from '../components/NavBar';
-import Footer from '../components/Footer';
+import NavBar from '../components/navbar';
+import Footer from '../components/footer';
 import Success from '../components/successcomponent';
 
 const SuccessPage = () => {
