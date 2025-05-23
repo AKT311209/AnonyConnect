@@ -96,7 +96,7 @@ const AdTicketDetail = ({ ticketId }) => {
                 maxWidth: '100%',
                 overflowX: 'auto',
                 padding: '8px',
-                background: '#f8f9fa',
+                background: '#fff', // match exact white background
                 borderRadius: '6px',
                 fontFamily: 'inherit',
                 fontSize: '1rem',
@@ -115,7 +115,7 @@ const AdTicketDetail = ({ ticketId }) => {
                 maxWidth: '100%',
                 overflowX: 'auto',
                 padding: '8px',
-                background: '#f8f9fa',
+                background: '#fff', // match exact white background
                 borderRadius: '6px',
                 fontFamily: 'inherit',
                 fontSize: '1rem',
