@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const TRUSTED_ORIGINS = ['https://example.com', 'https://admin.example.com'];
+const TRUSTED_ORIGINS = ['http://localhost:3000', 'https://contact.khoi.io.vn'];
 
 async function validateSession(origin, token) {
   if (!TRUSTED_ORIGINS.includes(origin)) {
