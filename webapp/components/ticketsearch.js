@@ -23,6 +23,17 @@ const TicketSearch = () => {
         const response = await fetch(`/api/checkticket?ticket_id=${ticketId}&turnstile_response=${turnstileResponse}`);
         const result = await response.json();
 
+        if (response.status === 403) {
+            const toast = document.getElementById('toast-1');
+            if (toast) {
+                toast.querySelector('.toast-header strong').textContent = 'Cloudflare Verification Failed';
+                toast.querySelector('.toast-body p').textContent = 'Cloudflare Turnstile verification failed. Please try again.';
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+            return;
+        }
+
         if (result.exists) {
             const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin || 'http://localhost:3000';
             window.location.href = `${baseUrl}/ticket/${encodeURIComponent(ticketId)}`;

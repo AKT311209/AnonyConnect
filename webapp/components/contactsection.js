@@ -54,6 +54,17 @@ const ContactSection = () => {
             body: JSON.stringify(data),
         });
 
+        if (response.status === 403) {
+            const toastElement = document.getElementById('toast-1');
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Cloudflare Verification Failed';
+                toastElement.querySelector('.toast-body p').textContent = 'Cloudflare Turnstile verification failed. Please try again.';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
+            return;
+        }
+
         if (response.status === 413) {
             const toastElement = document.getElementById('toast-1');
             if (toastElement) {

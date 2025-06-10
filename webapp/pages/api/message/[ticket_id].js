@@ -9,9 +9,19 @@ export default async function handler(req, res) {
         if (ticket) {
             const { password, ...ticketData } = ticket; // Exclude password from response
             if (ticket.password) {
-                const { password: providedPassword } = req.body;
+                const { password: providedPassword, 'cf-turnstile-response': turnstileResponse } = req.body;
                 if (!providedPassword) {
                     return res.status(401).json({ error: 'Password required' });
+                }
+                // Verify Turnstile before proceeding
+                const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/verify-turnstile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ turnstileResponse })
+                });
+                const verifyData = await verifyRes.json();
+                if (!verifyData.success) {
+                    return res.status(403).json({ error: 'Turnstile verification failed' });
                 }
                 const isValid = await bcrypt.compare(providedPassword, ticket.password);
                 if (!isValid) {

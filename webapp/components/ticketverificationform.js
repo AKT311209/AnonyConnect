@@ -3,9 +3,25 @@ import TurnstileWidget from './TurnstileWidget';
 
 const TicketVerification = ({ onVerify }) => {
     const [password, setPassword] = useState('');
+    const [turnstileResponse, setTurnstileResponse] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const response = await fetch(`/api/auth/${ticketId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password, turnstileResponse }),
+        });
+        if (response.status === 403) {
+            const toast = document.getElementById('toast-1');
+            if (toast) {
+                toast.querySelector('.toast-header strong').textContent = 'Cloudflare Verification Failed';
+                toast.querySelector('.toast-body p').textContent = 'Cloudflare Turnstile verification failed. Please try again.';
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+            return;
+        }
         onVerify(password);
     };
 

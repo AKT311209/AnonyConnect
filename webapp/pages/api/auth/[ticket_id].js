@@ -10,7 +10,17 @@ export default async function handler(req, res) {
             if (req.method === 'GET') {
                 res.status(200).json({ passwordExists: Boolean(ticket.password) });
             } else if (req.method === 'POST') {
-                const { password } = req.body;
+                // Verify Turnstile before proceeding
+                const { password, 'cf-turnstile-response': turnstileResponse } = req.body;
+                const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/verify-turnstile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ turnstileResponse })
+                });
+                const verifyData = await verifyRes.json();
+                if (!verifyData.success) {
+                    return res.status(403).json({ error: 'Turnstile verification failed' });
+                }
                 const isValid = await bcrypt.compare(password, ticket.password);
                 if (isValid) {
                     res.status(200).json({ isValid: true });

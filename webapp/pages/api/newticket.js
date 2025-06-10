@@ -10,7 +10,18 @@ function generateTicketId() {
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { name, email, message, password } = req.body;
+      const { name, email, message, password, 'cf-turnstile-response': turnstileResponse } = req.body;
+
+      // Verify Turnstile before proceeding
+      const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/verify-turnstile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ turnstileResponse })
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        return res.status(403).json({ error: 'Turnstile verification failed' });
+      }
 
       // Reject if message is shorter than 15 characters
       if (message.length < 15) {
