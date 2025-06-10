@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useRouter } from 'next/router';
 import ToastMessage from './ToastMessage';
-import Turnstile from 'react-turnstile';
+import TurnstileWidget from './TurnstileWidget';
 
 const ContactSection = () => {
     const router = useRouter();
@@ -154,7 +154,7 @@ const ContactSection = () => {
                                 <div className="mb-3"><textarea className="border rounded form-control mb-3" id="message-2" name="message" rows="6" placeholder="Message (required)" required></textarea></div>
                                 <div className="mb-3 me-0 pe-0"><input className="form-control" type="password" name="password" placeholder="Password (optional)" /><small className="form-text ps-0 pb-0 me-5 pe-0" style={{ marginRight: '54px' }}>Create a password to prevent others from viewing your ticket.</small></div>
                                 <div className="mb-3 d-flex justify-content-center">
-                                    <Turnstile sitekey="0x4AAAAAAA-RcQdPu6mWgu-p" />
+                                    <TurnstileWidget />
                                 </div>
                                 <button className="btn btn-primary d-block w-100" type="submit">Send</button>
                             </form>

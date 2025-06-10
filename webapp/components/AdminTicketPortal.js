@@ -66,25 +66,39 @@ const AdminPortal = () => {
                 </select>
               </div>
               <span className="counter pull-right"></span>
-              <div className="table-responsive table table-hover table-bordered results">
-                <table className="table table-hover table-bordered">
+              <div className="table-responsive results">
+                <table className="table table-hover table-bordered" style={{ tableLayout: 'auto', width: '100%', minWidth: 600 }}>
                   <thead className="bill-header cs">
                     <tr>
-                      <th id="trs-hd-1" className="col-lg-1" style={{ fontSize: '16px' }}>Ticket ID</th>
-                      <th id="trs-hd-2" className="col-lg-3" style={{ fontSize: '16px' }}>Submission time</th>
-                      <th id="trs-hd-3" className="col-lg-2" style={{ fontSize: '16px' }}>Sender name</th>
-                      <th id="trs-hd-4" className="col-lg-2" style={{ fontSize: '16px' }}>Sender email</th>
-                      <th id="trs-hd-5" className="col-lg-1" style={{ fontSize: '16px' }}>Status</th>
-                      <th id="trs-hd-6" className="col-lg-1" style={{ fontSize: '16px' }}>Action</th>
+                      <th className="col-lg-1" style={{ fontSize: '16px' }}>Ticket ID</th>
+                      <th className="col-lg-3" style={{ fontSize: '16px' }}>Submission time</th>
+                      <th className="col-lg-2" style={{ fontSize: '16px' }}>Sender name</th>
+                      <th className="col-lg-2" style={{ fontSize: '16px' }}>Sender email</th>
+                      <th className="col-lg-1" style={{ fontSize: '16px' }}>Status</th>
+                      <th className="col-lg-1" style={{ fontSize: '16px' }}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {sortedTickets.map(ticket => (
                       <tr key={ticket.ticket_id} style={{ borderWidth: '1px' }}>
-                        <td className="text-center" style={{ fontSize: '16px', fontWeight: 'bold' }}>{ticket.ticket_id}</td>
+                        <td className="text-center" style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                          {ticket.ticket_id}
+                        </td>
                         <td className="text-center" style={{ fontSize: '16px' }}>{formatDateTime(ticket.created_at)}</td>
-                        <td className="text-center" style={{ fontSize: '16px' }}>{ticket.sender_name || 'N/A'}</td>
-                        <td className="text-center" style={{ fontSize: '16px' }}>{ticket.sender_email || 'N/A'}</td>
+                        <td className="text-center" style={{ fontSize: '16px' }}>
+                          {
+                            ticket.sender_name && ticket.sender_name.length > 18
+                              ? ticket.sender_name.slice(0, 15) + '...'
+                              : ticket.sender_name || 'N/A'
+                          }
+                        </td>
+                        <td className="text-center" style={{ fontSize: '16px' }}>
+                          {
+                            ticket.sender_email && ticket.sender_email.length > 18
+                              ? ticket.sender_email.slice(0, 15) + '...'
+                              : ticket.sender_email || 'N/A'
+                          }
+                        </td>
                         <td className={`text-center ${getStatusClass(ticket.status)} fw-bold`} style={{ fontSize: '16px' }}>{ticket.status}</td>
                         <td className="text-center" style={{ textAlign: 'center' }}>
                           {(() => {

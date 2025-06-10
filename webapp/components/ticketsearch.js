@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListAlt } from '@fortawesome/free-regular-svg-icons';
+import TurnstileWidget from './TurnstileWidget';
 
 const TicketSearch = () => {
     const isValidTicketId = (id) => {
@@ -45,7 +46,7 @@ const TicketSearch = () => {
                     <div className="row">
                         <div className="col mb-0 pb-0 mt-0 pt-0">
                             <form className="bg-transparent border-0 shadow-none search-form" onSubmit={handleSubmit}>
-                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none"><span className="border-0 shadow-sm input-group-text"><FontAwesomeIcon icon={faListAlt} /></span><input className="border-0 shadow-sm form-control" type="text" placeholder="Your ticket ID (xxx-xxx)" required /><button className="btn btn-light border-0 shadow-sm" type="submit">View</button></div>
+                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none"><span className="border-0 shadow-sm input-group-text"><FontAwesomeIcon icon={faListAlt} /></span><input className="border-0 shadow-sm form-control" type="text" placeholder="Your ticket ID (xxx-xxx)" required /><TurnstileWidget /><button className="btn btn-light border-0 shadow-sm" type="submit">View</button></div>
                             </form>
                         </div>
                     </div>

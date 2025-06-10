@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Turnstile from 'react-turnstile';
+import TurnstileWidget from './TurnstileWidget';
 
 const TicketVerification = ({ onVerify }) => {
     const [password, setPassword] = useState('');
@@ -39,7 +39,7 @@ const TicketVerification = ({ onVerify }) => {
                                     <button className="btn btn-light border-0 shadow-sm" type="submit">Verify</button>
                                 </div>
                                 <div className="mb-3 d-flex justify-content-end">
-                                    <Turnstile sitekey="0x4AAAAAAA-RcQdPu6mWgu-p" />
+                                    <TurnstileWidget />
                                 </div>
                             </form>
                         </div>
