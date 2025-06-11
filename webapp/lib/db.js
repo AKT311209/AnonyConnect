@@ -155,6 +155,10 @@ async function autoRejectAndCleanup(config, callback) {
 // Schedule the deletion of expired sessions to run periodically
 setInterval(deleteExpiredSessions, 60 * 60 * 1000); // Run every hour
 
+function undoTicketAction(ticketId) {
+  return runExec("UPDATE tickets SET status = 'Pending', response = NULL WHERE ticket_id = ?", [ticketId]);
+}
+
 module.exports = {
   db,
   createTicket,
@@ -167,5 +171,6 @@ module.exports = {
   respondToTicket,
   rejectTicket,
   fetchTicketDetails,
-  autoRejectAndCleanup
+  autoRejectAndCleanup,
+  undoTicketAction
 };
