@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const TRUSTED_ORIGINS = ['http://localhost:3000', 'https://contact.khoi.io.vn'];
-
 async function validateSession(origin, token) {
-  if (!TRUSTED_ORIGINS.includes(origin)) {
-    throw new Error('Untrusted origin');
-  }
   try {
     const res = await fetch(`${origin}/api/admin/validate-session`, {
       headers: {
