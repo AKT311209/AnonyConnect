@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import TurnstileWidget from './TurnstileWidget';
 
 const AdminLoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(username, password, rememberMe);
+    onLogin(username, password, rememberMe, turnstileToken);
   };
 
   return (
@@ -31,7 +33,14 @@ const AdminLoginForm = ({ onLogin }) => {
                 <label className="form-check-label" htmlFor="formCheck-1">Remember me</label>
               </div>
             </div>
-            <button className="btn btn-primary btn-lg d-block btn-signin w-100" type="submit">Sign in</button>
+            <div className="mb-3">
+              <TurnstileWidget
+                onSuccess={setTurnstileToken}
+                onExpire={() => setTurnstileToken('')}
+                className="w-100"
+              />
+            </div>
+            <button className="btn btn-primary btn-lg d-block btn-signin w-100" type="submit" disabled={!turnstileToken}>Sign in</button>
           </form>
         </div>
       </div>

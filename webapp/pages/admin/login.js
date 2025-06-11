@@ -18,13 +18,13 @@ const AdminLoginPage = () => {
     checkSession();
   }, [router]);
 
-  const handleLogin = async (username, password, rememberMe) => {
+  const handleLogin = async (username, password, rememberMe, turnstileToken) => {
     const res = await fetch('/api/admin/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password, rememberMe }),
+      body: JSON.stringify({ username, password, rememberMe, turnstileToken }),
     });
 
     if (res.ok) {
