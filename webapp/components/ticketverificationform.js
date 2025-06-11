@@ -1,28 +1,15 @@
 import React, { useState } from 'react';
 import TurnstileWidget from './TurnstileWidget';
 
-const TicketVerification = ({ onVerify }) => {
-    const [password, setPassword] = useState('');
-    const [turnstileResponse, setTurnstileResponse] = useState('');
+const TicketVerification = ({ ticketId, onVerify }) => {
+    const [submitting, setSubmitting] = useState(false);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const response = await fetch(`/api/auth/${ticketId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password, turnstileResponse }),
-        });
-        if (response.status === 403) {
-            const toast = document.getElementById('toast-1');
-            if (toast) {
-                toast.querySelector('.toast-header strong').textContent = 'Cloudflare Verification Failed';
-                toast.querySelector('.toast-body p').textContent = 'Cloudflare Turnstile verification failed. Please try again.';
-                const bsToast = new bootstrap.Toast(toast);
-                bsToast.show();
-            }
-            return;
-        }
-        onVerify(password);
+        setSubmitting(true);
+        const password = e.target.elements[0].value;
+        const turnstileResponse = e.target.elements[1].value;
+        onVerify(password, turnstileResponse);
     };
 
     return (
@@ -36,7 +23,7 @@ const TicketVerification = ({ onVerify }) => {
                     </div>
                     <div className="row">
                         <div className="col mb-0 pb-0 mt-4">
-                            <form className="bg-transparent border-0 shadow-none search-form pt-0 mt-3" onSubmit={handleSubmit}>
+                            <form className="bg-transparent border-0 shadow-none search-form pt-0 mt-3" onSubmit={handleSubmit} autoComplete="off">
                                 <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none">
                                     <span className="border-0 shadow-sm input-group-text">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" className="bi bi-shield-lock">
@@ -49,13 +36,10 @@ const TicketVerification = ({ onVerify }) => {
                                         type="password"
                                         placeholder="Enter your password"
                                         required
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
+                                        name="password"
                                     />
-                                    <button className="btn btn-light border-0 shadow-sm" type="submit">Verify</button>
-                                </div>
-                                <div className="mb-3 d-flex justify-content-end">
-                                    <TurnstileWidget />
+                                    <TurnstileWidget name="cf-turnstile-response" />
+                                    <button className="btn btn-light border-0 shadow-sm" type="submit" disabled={submitting}>Verify</button>
                                 </div>
                             </form>
                         </div>

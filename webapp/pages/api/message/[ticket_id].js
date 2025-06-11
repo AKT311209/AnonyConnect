@@ -1,6 +1,6 @@
 import { getTicketById } from '../../../lib/db';
 import bcrypt from 'bcrypt';
-import verifyCloudflare from '../../../lib/verify-cloudflare';
+
 
 export default async function handler(req, res) {
     const { ticket_id } = req.query;
@@ -10,14 +10,9 @@ export default async function handler(req, res) {
         if (ticket) {
             const { password, ...ticketData } = ticket; // Exclude password from response
             if (ticket.password) {
-                const { password: providedPassword, 'cf-turnstile-response': turnstileResponse } = req.body;
+                const { password: providedPassword} = req.body;
                 if (!providedPassword) {
                     return res.status(401).json({ error: 'Password required' });
-                }
-                // Verify Turnstile before proceeding
-                const verifyData = await verifyCloudflare(turnstileResponse);
-                if (!verifyData.success) {
-                    return res.status(403).json({ error: 'Turnstile verification failed' });
                 }
                 const isValid = await bcrypt.compare(providedPassword, ticket.password);
                 if (!isValid) {

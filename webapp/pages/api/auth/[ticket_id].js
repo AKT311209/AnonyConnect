@@ -12,7 +12,8 @@ export default async function handler(req, res) {
                 res.status(200).json({ passwordExists: Boolean(ticket.password) });
             } else if (req.method === 'POST') {
                 // Verify Turnstile before proceeding
-                const { password, 'cf-turnstile-response': turnstileResponse } = req.body;
+                const { password, turnstileResponse : turnstileResponse} = req.body;
+                
                 const verifyData = await verifyCloudflare(turnstileResponse);
                 if (!verifyData.success) {
                     return res.status(403).json({ error: 'Turnstile verification failed' });

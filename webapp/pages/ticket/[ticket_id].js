@@ -86,20 +86,43 @@ const TicketPage = () => {
         }
     }, [ticket_id]);
 
-    const handleVerification = async (password) => {
+    const handleVerification = async (password, turnstileResponse) => {
         try {
             if (!isValidTicketId(ticket_id)) {
                 alert('Invalid ticket ID format');
                 router.push('/');
                 return;
             }
+
             const response = await fetch(`/api/auth/${ticket_id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ password }),
+                body: JSON.stringify({ password, turnstileResponse }),
             });
+            if (response.status === 403) {
+                const toast = document.getElementById('toast-1');
+                if (toast) {
+                    toast.querySelector('.toast-header strong').textContent = 'Cloudflare Verification Failed';
+                    toast.querySelector('.toast-body p').textContent = 'Cloudflare Turnstile verification failed. Please try again.';
+                    const bsToast = new bootstrap.Toast(toast);
+                    bsToast.show();
+                }
+                setTimeout(() => window.location.reload(), 1000);
+                return;
+            }
+            if (response.status === 401) {
+                const toast = document.getElementById('toast-1');
+                if (toast) {
+                    toast.querySelector('.toast-header strong').textContent = 'Wrong password';
+                    toast.querySelector('.toast-body p').textContent = 'The password is incorrect. Please try again.';
+                    const bsToast = new bootstrap.Toast(toast);
+                    bsToast.show();
+                }
+                setTimeout(() => window.location.reload(), 1000);
+                return;
+            }
             const data = await response.json();
             if (data.isValid) {
                 setIsVerified(true);
@@ -122,7 +145,7 @@ const TicketPage = () => {
 
             <div>
                 {showVerification && !isVerified && (
-                    <TicketVerification onVerify={handleVerification} />
+                    <TicketVerification ticketId={ticket_id} onVerify={handleVerification} />
                 )}
                 {isVerified && ticketData && (
                     <TicketDetail ticketData={ticketData} />
