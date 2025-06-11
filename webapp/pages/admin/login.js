@@ -31,8 +31,23 @@ const AdminLoginPage = () => {
       router.push('/admin/tickets');
     } else {
       const toast = document.getElementById('toast-1');
-      const bsToast = new bootstrap.Toast(toast);
-      bsToast.show();
+      if (toast) {
+        let header = 'Login Error';
+        let body = 'Login failed. Please check your credentials and complete the Cloudflare verification.';
+        if (res.status === 403) {
+          header = 'Cloudflare Verification Failed';
+          body = 'Cloudflare Turnstile verification failed. Please try again.';
+        } else if (res.status === 401) {
+          header = 'Wrong password';
+          body = 'The password is incorrect. Please try again.';
+        }
+        toast.querySelector('.toast-header strong').textContent = header;
+        toast.querySelector('.toast-body p').textContent = body;
+        const bsToast = new window.bootstrap.Toast(toast);
+        bsToast.show();
+      }
+      // Reload the form to reset the Cloudflare token
+      setTimeout(() => window.location.reload(), 1000);
     }
   };
 

@@ -6,9 +6,11 @@ const AdminLoginForm = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileValid, setTurnstileValid] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!turnstileValid) return;
     onLogin(username, password, rememberMe, turnstileToken);
   };
 
@@ -35,12 +37,12 @@ const AdminLoginForm = ({ onLogin }) => {
             </div>
             <div className="mb-3">
               <TurnstileWidget
-                onSuccess={setTurnstileToken}
-                onExpire={() => setTurnstileToken('')}
+                onSuccess={token => { setTurnstileToken(token); setTurnstileValid(true); }}
+                onExpire={() => { setTurnstileToken(''); setTurnstileValid(false); }}
                 className="w-100"
               />
             </div>
-            <button className="btn btn-primary btn-lg d-block btn-signin w-100" type="submit" disabled={!turnstileToken}>Sign in</button>
+            <button className="btn btn-primary btn-lg d-block btn-signin w-100" type="submit" disabled={!turnstileValid}>Sign in</button>
           </form>
         </div>
       </div>

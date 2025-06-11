@@ -3,13 +3,15 @@ import TurnstileWidget from './TurnstileWidget';
 
 const TicketVerification = ({ ticketId, onVerify }) => {
     const [submitting, setSubmitting] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState('');
+    const [turnstileValid, setTurnstileValid] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!turnstileValid) return;
         setSubmitting(true);
         const password = e.target.elements[0].value;
-        const turnstileResponse = e.target.elements[1].value;
-        onVerify(password, turnstileResponse);
+        onVerify(password, turnstileToken);
     };
 
     return (
@@ -38,8 +40,11 @@ const TicketVerification = ({ ticketId, onVerify }) => {
                                         required
                                         name="password"
                                     />
-                                    <TurnstileWidget name="cf-turnstile-response" />
-                                    <button className="btn btn-light border-0 shadow-sm" type="submit" disabled={submitting}>Verify</button>
+                                    <TurnstileWidget
+                                        onSuccess={token => { setTurnstileToken(token); setTurnstileValid(true); }}
+                                        onExpire={() => { setTurnstileToken(''); setTurnstileValid(false); }}
+                                    />
+                                    <button className="btn btn-light border-0 shadow-sm" type="submit" disabled={submitting || !turnstileValid}>Verify</button>
                                 </div>
                             </form>
                         </div>

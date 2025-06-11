@@ -9,7 +9,7 @@ const ToastMessage = ({ header, body }) => {
                     <button className="btn-close ms-2 mb-1 close" type="button" aria-label="Close" data-bs-dismiss="toast"></button>
                 </div>
                 <div className="toast-body" role="alert">
-                    <p>{body || 'Login failed. Please check your credentials and complete the Cloudflare verification.'}</p>
+                    <p>{body || 'Login failed. Please check your credentials or Cloudflare verification.'}</p>
                 </div>
             </div>
         </div>

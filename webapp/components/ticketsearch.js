@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListAlt } from '@fortawesome/free-regular-svg-icons';
 import TurnstileWidget from './TurnstileWidget';
 
 const TicketSearch = () => {
+    const [turnstileToken, setTurnstileToken] = useState('');
+    const [turnstileValid, setTurnstileValid] = useState(false);
+
     const isValidTicketId = (id) => {
         const ticketIdPattern = /^[a-z0-9]{3}-[a-z0-9]{3}$/; // Pattern for (xxx-xxx)
         return ticketIdPattern.test(id);
     };
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!turnstileValid) return;
         const ticketId = event.target.elements[0].value;
         const turnstileResponse = event.target.elements[1].value;
 
@@ -65,7 +69,34 @@ const TicketSearch = () => {
                     <div className="row">
                         <div className="col mb-0 pb-0 mt-0 pt-0">
                             <form className="bg-transparent border-0 shadow-none search-form" onSubmit={handleSubmit}>
-                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none"><span className="border-0 shadow-sm input-group-text"><FontAwesomeIcon icon={faListAlt} /></span><input className="border-0 shadow-sm form-control" type="text" placeholder="Your ticket ID (xxx-xxx)" required /><TurnstileWidget /><button className="btn btn-light border-0 shadow-sm" type="submit">View</button></div>
+                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none">
+                                    <span className="border-0 shadow-sm input-group-text">
+                                        <FontAwesomeIcon icon={faListAlt} />
+                                    </span>
+                                    <input
+                                        className="border-0 shadow-sm form-control"
+                                        type="text"
+                                        placeholder="Your ticket ID (xxx-xxx)"
+                                        required
+                                    />
+                                    <TurnstileWidget
+                                        onSuccess={(token) => {
+                                            setTurnstileToken(token);
+                                            setTurnstileValid(true);
+                                        }}
+                                        onExpire={() => {
+                                            setTurnstileToken('');
+                                            setTurnstileValid(false);
+                                        }}
+                                    />
+                                    <button
+                                        className="btn btn-light border-0 shadow-sm"
+                                        type="submit"
+                                        disabled={!turnstileValid}
+                                    >
+                                        View
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
