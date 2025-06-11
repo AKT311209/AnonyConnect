@@ -7,8 +7,8 @@ const NavBar = () => {
   return (
     <nav className="navbar navbar-expand-md sticky-top navbar-shrink py-3" id="mainNav">
       <div className="container">
-        <Link href="/" legacyBehavior>
-          <a className="navbar-brand d-flex align-items-center">
+        <Link href="/">
+          <span className="navbar-brand d-flex align-items-center">
             <span className="bs-icon-sm bs-icon-circle bs-icon-primary shadow d-flex justify-content-center align-items-center me-2 bs-icon">
               <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" height="1em" viewBox="0 0 24 24" width="1em" fill="currentColor">
                 <g>
@@ -18,7 +18,7 @@ const NavBar = () => {
               </svg>
             </span>
             <span>AnonyConnect</span>
-          </a>
+          </span>
         </Link>
         <button data-bs-toggle="collapse" className="navbar-toggler" data-bs-target="#navcol-1">
           <span className="visually-hidden">Toggle navigation</span>
@@ -27,13 +27,13 @@ const NavBar = () => {
         <div className="collapse navbar-collapse" id="navcol-1">
           <ul className="navbar-nav mx-auto">
             <li className="nav-item">
-              <Link href="/" legacyBehavior>
-                <a className={`nav-link ${router.pathname === '/' ? 'active' : ''}`}>Contact</a>
+              <Link href="/">
+                <span className={`nav-link ${router.pathname === '/' ? 'active' : ''}`}>Contact</span>
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/tickets" legacyBehavior>
-                <a className={`nav-link ${router.pathname === '/tickets' ? 'active' : ''}`}>Tickets</a>
+              <Link href="/tickets">
+                <span className={`nav-link ${router.pathname === '/tickets' ? 'active' : ''}`}>Tickets</span>
               </Link>
             </li>
           </ul>
