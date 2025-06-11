@@ -1,6 +1,7 @@
 import { createTicket, checkDuplicateTicketId } from '../../lib/db';
 import bcrypt from 'bcrypt';
 import sendTelegramNotification from '../../scripts/sendTelegramNotification';
+import verifyCloudflare from '../../lib/verify-cloudflare';
 
 function generateTicketId() {
   const randomString = () => Math.random().toString(36).substring(2, 5);
@@ -13,12 +14,7 @@ export default async function handler(req, res) {
       const { name, email, message, password, 'cf-turnstile-response': turnstileResponse } = req.body;
 
       // Verify Turnstile before proceeding
-      const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/verify-turnstile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ turnstileResponse })
-      });
-      const verifyData = await verifyRes.json();
+      const verifyData = await verifyCloudflare(turnstileResponse);
       if (!verifyData.success) {
         return res.status(403).json({ error: 'Turnstile verification failed' });
       }

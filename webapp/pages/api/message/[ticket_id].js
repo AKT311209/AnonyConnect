@@ -1,5 +1,6 @@
 import { getTicketById } from '../../../lib/db';
 import bcrypt from 'bcrypt';
+import verifyCloudflare from '../../../lib/verify-cloudflare';
 
 export default async function handler(req, res) {
     const { ticket_id } = req.query;
@@ -14,12 +15,7 @@ export default async function handler(req, res) {
                     return res.status(401).json({ error: 'Password required' });
                 }
                 // Verify Turnstile before proceeding
-                const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/verify-turnstile`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ turnstileResponse })
-                });
-                const verifyData = await verifyRes.json();
+                const verifyData = await verifyCloudflare(turnstileResponse);
                 if (!verifyData.success) {
                     return res.status(403).json({ error: 'Turnstile verification failed' });
                 }

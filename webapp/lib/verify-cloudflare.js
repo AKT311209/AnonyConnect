@@ -1,18 +1,13 @@
 import fetch from 'node-fetch';
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { turnstileResponse } = req.body;
+export default async function verifyCloudflare(turnstileResponse) {
   if (!turnstileResponse) {
-    return res.status(400).json({ error: 'Missing turnstile response' });
+    return { success: false, error: 'Missing turnstile response' };
   }
 
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
-    return res.status(500).json({ error: 'Turnstile secret not configured' });
+    return { success: false, error: 'Turnstile secret not configured' };
   }
 
   try {
@@ -26,11 +21,11 @@ export default async function handler(req, res) {
     });
     const data = await verifyRes.json();
     if (data.success) {
-      return res.status(200).json({ success: true });
+      return { success: true };
     } else {
-      return res.status(403).json({ success: false, ...data });
+      return { success: false, ...data };
     }
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to verify turnstile' });
+    return { success: false, error: 'Failed to verify turnstile' };
   }
 }

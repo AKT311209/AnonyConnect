@@ -31,6 +31,8 @@ const TicketSearch = () => {
                 const bsToast = new bootstrap.Toast(toast);
                 bsToast.show();
             }
+            // Reload the form to reset the Cloudflare token
+            setTimeout(() => window.location.reload(), 1000);
             return;
         }
 
@@ -39,8 +41,14 @@ const TicketSearch = () => {
             window.location.href = `${baseUrl}/ticket/${encodeURIComponent(ticketId)}`;
         } else {
             const toast = document.getElementById('toast-1');
-            const bsToast = new bootstrap.Toast(toast);
-            bsToast.show();
+            if (toast) {
+                toast.querySelector('.toast-header strong').textContent = 'Invalid ticket';
+                toast.querySelector('.toast-body p').textContent = 'The system could not find the provided ticket id. Please try again.';
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+            // Reload the form to reset the Cloudflare token
+            setTimeout(() => window.location.reload(), 1000);
         }
     };
 
