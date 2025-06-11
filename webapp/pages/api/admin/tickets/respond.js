@@ -1,6 +1,7 @@
 import { respondToTicket } from '../../../../lib/db';
+import { withAdminAuth } from '../../../../utils/withAdminAuth';
 
-export default async function handler(req, res) {
+export default withAdminAuth(async function handler(req, res) {
     if (req.method === 'POST') {
         const { ticketId, response } = req.body;
 
@@ -13,4 +14,4 @@ export default async function handler(req, res) {
     } else {
         res.status(405).json({ error: 'Method not allowed' });
     }
-}
+});

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import { withAdminPageAuth } from '../../utils/withAdminPageAuth';
 import AdminNavBar from '../../components/AdminNavbar';
 import AdminConfigLayout from '../../components/AdminConfigLayout';
 
-export default function AdminConfig() {
+function AdminConfig() {
   const [config, setConfig] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -56,3 +57,5 @@ export default function AdminConfig() {
     </>
   );
 }
+
+export default withAdminPageAuth(AdminConfig);

@@ -1,10 +1,11 @@
 // Next.js API route for reading and writing config.json
 import fs from 'fs';
 import path from 'path';
+import { withAdminAuth } from '../../../utils/withAdminAuth';
 
 const configPath = path.join(process.cwd(), 'storage', 'config.json');
 
-export default function handler(req, res) {
+export default withAdminAuth(function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const data = fs.readFileSync(configPath, 'utf-8');
@@ -22,4 +23,4 @@ export default function handler(req, res) {
   } else {
     res.status(405).json({ error: 'Method not allowed' });
   }
-}
+});

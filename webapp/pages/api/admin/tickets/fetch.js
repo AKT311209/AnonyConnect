@@ -1,6 +1,7 @@
 import { fetchTicketDetails } from '../../../../lib/db';
+import { withAdminAuth } from '../../../../utils/withAdminAuth';
 
-export default async function handler(req, res) {
+export default withAdminAuth(async function handler(req, res) {
     if (req.method === 'GET') {
         const { ticketId } = req.query;
 
@@ -13,4 +14,4 @@ export default async function handler(req, res) {
     } else {
         res.status(405).json({ error: 'Method not allowed' });
     }
-}
+});

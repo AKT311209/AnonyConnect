@@ -1,3 +1,4 @@
+import { withAdminPageAuth } from '../../utils/withAdminPageAuth';
 import AdminTicketPort from '../../components/AdminTicketPortal';
 import AdNav from '../../components/AdminNavbar';
 import Footer from '../../components/footer';
@@ -13,4 +14,4 @@ const AdminDash = () => {
   );
 };
 
-export default AdminDash;
+export default withAdminPageAuth(AdminDash);

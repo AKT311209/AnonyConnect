@@ -3,6 +3,7 @@ import AdNav from '../../../components/AdminNavbar';
 import Footer from '../../../components/footer';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { withAdminPageAuth } from '../../../utils/withAdminPageAuth';
 
 const AdminTicketDetail = () => {
   const router = useRouter();
@@ -35,4 +36,4 @@ const AdminTicketDetail = () => {
   );
 };
 
-export default AdminTicketDetail;
+export default withAdminPageAuth(AdminTicketDetail);
