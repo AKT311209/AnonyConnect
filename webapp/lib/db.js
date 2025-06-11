@@ -99,6 +99,7 @@ function getSessionById(session_id) {
 }
 
 function deleteSessionById(session_id) {
+  console.log('Deleting session with ID:', session_id);
   return runExec('DELETE FROM sessions WHERE session_id = ?', [session_id]);
 }
 

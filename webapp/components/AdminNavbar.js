@@ -48,6 +48,18 @@ const AdminNavBar = () => {
               </Link>
             </li>
           </ul>
+          <div className="d-flex ms-0" style={{gap: '0.05rem'}}>
+            <button
+              className="btn btn-outline-danger ms-0"
+              style={{ minWidth: 80, fontWeight: 500, fontSize: '1.05rem', borderRadius: '2rem', borderWidth: 2, color: '#e53935', borderColor: '#e53935', background: 'transparent', padding: '0.18rem 0.9rem' }}
+              onClick={async () => {
+                await fetch('/api/admin/invalidate-session', { method: 'POST' });
+                router.push('/admin/login');
+              }}
+            >
+              Log out
+            </button>
+          </div>
         </div>
       </div>
     </nav>
