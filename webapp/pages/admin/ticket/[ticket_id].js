@@ -13,7 +13,7 @@ const AdminTicketDetail = () => {
   useEffect(() => {
     const checkTicketExists = async () => {
       if (ticket_id) {
-        const res = await fetch(`/api/checkticket?ticket_id=${ticket_id}`);
+        const res = await fetch(`/api/admin/checkticket?ticket_id=${ticket_id}`);
         const data = await res.json();
         if (!data.exists) {
           setTicketExists(false);
