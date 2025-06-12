@@ -12,5 +12,14 @@
             "type": "Telegram",
             "enabled": true
         }
-    ]
+    ],
+    "notificationSettings": {
+        "onTicketCreated": true,
+        "onAdminLogin": true
+    },
+    "appearance": {
+        "admin": {
+            "ticketsPagination": 5
+        }
+    }
 }

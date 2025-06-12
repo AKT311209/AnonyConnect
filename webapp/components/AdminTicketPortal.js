@@ -5,29 +5,48 @@ import moment from 'moment-timezone';
 const AdminPortal = () => {
   const [tickets, setTickets] = useState([]);
   const [sortBy, setSortBy] = useState('status');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch('/api/admin/portal')
-      .then(response => response.json())
-      .then(data => setTickets(data))
-      .catch(error => console.error('Error fetching tickets:', error));
+    // Fetch config for default page size on mount
+    fetch('/api/admin/config')
+      .then(res => res.json())
+      .then(cfg => {
+        const defaultSize = cfg?.appearance?.admin?.ticketsPagination || 20;
+        setPageSize(defaultSize);
+      })
+      .catch(() => setPageSize(20));
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/admin/portal?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}`)
+      .then(response => response.json())
+      .then(data => {
+        setTickets(data.tickets || []);
+        setTotal(data.total || 0);
+        setLoading(false);
+      })
+      .catch(error => {
+        setTickets([]);
+        setTotal(0);
+        setLoading(false);
+      });
+  }, [page, pageSize, sortBy]);
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
+    setPage(1);
   };
 
-  const sortedTickets = [...tickets].sort((a, b) => {
-    if (sortBy === 'submission_time') {
-      return new Date(b.created_at) - new Date(a.created_at);
-    } else {
-      const statusComparison = a.status.localeCompare(b.status);
-      if (statusComparison === 0) {
-        return new Date(b.created_at) - new Date(a.created_at);
-      }
-      return statusComparison;
-    }
-  });
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  const totalPages = Math.ceil(total / pageSize);
 
   const formatDateTime = (dateTime) => {
     return moment.utc(dateTime).tz(moment.tz.guess()).format('DD-MM-YYYY HH:mm (UTC Z)');
@@ -79,44 +98,93 @@ const AdminPortal = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {sortedTickets.map(ticket => (
-                      <tr key={ticket.ticket_id} style={{ borderWidth: '1px' }}>
-                        <td className="text-center" style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                          {ticket.ticket_id}
-                        </td>
-                        <td className="text-center" style={{ fontSize: '16px' }}>{formatDateTime(ticket.created_at)}</td>
-                        <td className="text-center" style={{ fontSize: '16px' }}>
-                          {
-                            ticket.sender_name && ticket.sender_name.length > 18
-                              ? ticket.sender_name.slice(0, 15) + '...'
-                              : ticket.sender_name || 'N/A'
-                          }
-                        </td>
-                        <td className="text-center" style={{ fontSize: '16px' }}>
-                          {
-                            ticket.sender_email && ticket.sender_email.length > 18
-                              ? ticket.sender_email.slice(0, 15) + '...'
-                              : ticket.sender_email || 'N/A'
-                          }
-                        </td>
-                        <td className={`text-center ${getStatusClass(ticket.status)} fw-bold`} style={{ fontSize: '16px' }}>{ticket.status}</td>
-                        <td className="text-center" style={{ textAlign: 'center' }}>
-                          {(() => {
-                            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
-                            return (
-                              <Link href={`${baseUrl}/admin/ticket/${ticket.ticket_id}`} target="_blank" rel="noopener noreferrer" className="btn btn-success border rounded border-1 mt-1" style={{ marginLeft: '5px', borderColor: 'var(--bs-primary)', background: 'var(--bs-primary)' }}>
-                                <svg className="bi bi-card-list text-light" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" style={{fontSize: '18px'}}>
-                                  <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"></path>
-                                  <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"></path>
-                                </svg>
-                              </Link>
-                            );
-                          })()}
-                        </td>
-                      </tr>
-                    ))}
+                    {loading ? (
+                      <tr><td colSpan={6} className="text-center">Loading...</td></tr>
+                    ) : tickets.length === 0 ? (
+                      <tr><td colSpan={6} className="text-center">No tickets found.</td></tr>
+                    ) : (
+                      tickets.map(ticket => (
+                        <tr key={ticket.ticket_id} style={{ borderWidth: '1px' }}>
+                          <td className="text-center" style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                            {ticket.ticket_id}
+                          </td>
+                          <td className="text-center" style={{ fontSize: '16px' }}>{formatDateTime(ticket.created_at)}</td>
+                          <td className="text-center" style={{ fontSize: '16px' }}>
+                            {
+                              ticket.sender_name && ticket.sender_name.length > 18
+                                ? ticket.sender_name.slice(0, 15) + '...'
+                                : ticket.sender_name || 'N/A'
+                            }
+                          </td>
+                          <td className="text-center" style={{ fontSize: '16px' }}>
+                            {
+                              ticket.sender_email && ticket.sender_email.length > 18
+                                ? ticket.sender_email.slice(0, 15) + '...'
+                                : ticket.sender_email || 'N/A'
+                            }
+                          </td>
+                          <td className={`text-center ${getStatusClass(ticket.status)} fw-bold`} style={{ fontSize: '16px' }}>{ticket.status}</td>
+                          <td className="text-center" style={{ textAlign: 'center' }}>
+                            {(() => {
+                              const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+                              return (
+                                <Link href={`${baseUrl}/admin/ticket/${ticket.ticket_id}`} target="_blank" rel="noopener noreferrer" className="btn btn-success border rounded border-1 mt-1" style={{ marginLeft: '5px', borderColor: 'var(--bs-primary)', background: 'var(--bs-primary)' }}>
+                                  <svg className="bi bi-card-list text-light" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" style={{fontSize: '18px'}}>
+                                    <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"></path>
+                                    <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"></path>
+                                  </svg>
+                                </Link>
+                              );
+                            })()}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
+              </div>
+              {/* Pagination Controls */}
+              <div className="d-flex justify-content-between align-items-center mt-3">
+                <div className="d-flex align-items-center" style={{gap: 8}}>
+                  <span>Page</span>
+                  <form
+                    onSubmit={e => {
+                      e.preventDefault();
+                      const val = e.target.elements.pageInput.value;
+                      const num = Number(val);
+                      if (!isNaN(num) && num >= 1 && num <= totalPages && num !== page) {
+                        handlePageChange(num);
+                      }
+                    }}
+                    style={{display: 'inline'}}
+                  >
+                    <input
+                      type="number"
+                      name="pageInput"
+                      min={1}
+                      max={totalPages}
+                      placeholder={page}
+                      style={{ width: 36, height: 32, textAlign: 'center', borderRadius: 4, border: '1px solid #aab3b9', fontSize: 15, padding: 0, display: 'inline-block', verticalAlign: 'middle' }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          e.target.form.requestSubmit();
+                        }
+                      }}
+                      onBlur={e => {
+                        const val = e.target.value;
+                        const num = Number(val);
+                        if (!isNaN(num) && num >= 1 && num <= totalPages && num !== page) {
+                          handlePageChange(num);
+                        }
+                      }}
+                    />
+                  </form>
+                  <span>of {totalPages || 1}</span>
+                </div>
+                <div>
+                  <button className="btn btn-outline-primary btn-sm me-2" onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
+                  <button className="btn btn-outline-primary btn-sm" onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>Next</button>
+                </div>
               </div>
             </div>
           </div>

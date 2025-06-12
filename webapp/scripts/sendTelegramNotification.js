@@ -21,6 +21,21 @@ function isTelegramNotificationEnabled() {
 }
 
 /**
+ * Reads notificationSettings from config.json.
+ * Returns the notificationSettings object or defaults.
+ */
+function getNotificationSettings() {
+  try {
+    const configPath = path.join(process.cwd(), 'storage', 'config.json');
+    const configRaw = fs.readFileSync(configPath, 'utf-8');
+    const config = JSON.parse(configRaw);
+    return config.notificationSettings || { onTicketCreated: true, onAdminLogin: true };
+  } catch (err) {
+    return { onTicketCreated: true, onAdminLogin: true };
+  }
+}
+
+/**
  * Sends a Telegram notification with the given ticket info if enabled in config.json.
  * @param {string} ticket_id
  * @param {string} name
@@ -67,4 +82,30 @@ async function sendTelegramNotification(ticket_id, name, email, message) {
   }
 }
 
+/**
+ * Sends a custom Telegram notification if enabled in config.json.
+ * @param {string} message - The message to send.
+ */
+async function sendCustomTelegramNotification(message) {
+  if (!isTelegramNotificationEnabled()) return;
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (botToken && chatId) {
+    try {
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'Markdown'
+        })
+      });
+    } catch (err) {
+      console.error('Failed to send Telegram notification:', err);
+    }
+  }
+}
+
+export { getNotificationSettings, sendCustomTelegramNotification };
 export default sendTelegramNotification;

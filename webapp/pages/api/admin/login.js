@@ -3,6 +3,7 @@ import { db } from '../../../lib/db';
 import { v4 as uuidv4 } from 'uuid';
 import { serialize } from 'cookie';
 import verifyCloudflare from '../../../lib/verify-cloudflare';
+import { getNotificationSettings, sendCustomTelegramNotification } from '../../../scripts/sendTelegramNotification';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -24,7 +25,7 @@ export default async function handler(req, res) {
     const sessionId = uuidv4();
     const token = jwt.sign({ username, sessionId }, secret, { expiresIn: maxAge });
 
-    db.run('INSERT INTO sessions (session_id, username, max_age) VALUES (?, ?, ?)', [sessionId, username, maxAge], (err) => {
+    db.run('INSERT INTO sessions (session_id, username, max_age) VALUES (?, ?, ?)', [sessionId, username, maxAge], async (err) => {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
@@ -37,6 +38,12 @@ export default async function handler(req, res) {
       });
 
       res.setHeader('Set-Cookie', cookie);
+
+      // Notify on admin login if enabled
+      const notificationSettings = getNotificationSettings();
+      if (notificationSettings.onAdminLogin) {
+        await sendCustomTelegramNotification('AnonyConnect: Someone has just logged to admin account');
+      }
 
       return res.status(200).json({ sessionId });
     });

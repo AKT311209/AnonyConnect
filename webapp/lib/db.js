@@ -145,7 +145,8 @@ async function autoRejectAndCleanup(config, callback) {
     }
     if (config.autoCleanup?.enabled) {
       const cleanupTimeout = Number(config.autoCleanup.timeout) || 2592000;
-      deleted = await runExec('DELETE FROM tickets WHERE (strftime(\'%s\',\'now\') - strftime(\'%s\', created_at)) > ?', [cleanupTimeout]);
+      // Only delete tickets that are NOT 'Pending' and are older than the timeout
+      deleted = await runExec("DELETE FROM tickets WHERE status != 'Pending' AND (strftime('%s','now') - strftime('%s', created_at)) > ?", [cleanupTimeout]);
     }
     callback(null, { rejected, deleted });
   } catch (err) {
@@ -158,6 +159,23 @@ setInterval(deleteExpiredSessions, 60 * 60 * 1000); // Run every hour
 
 function undoTicketAction(ticketId) {
   return runExec("UPDATE tickets SET status = 'Pending', response = NULL WHERE ticket_id = ?", [ticketId]);
+}
+
+function getTicketsPaginated(offset, limit, sortBy = 'status', sortDir = 'ASC') {
+  let orderBy = 'status ASC, created_at DESC';
+  if (sortBy === 'submission_time') {
+    orderBy = 'created_at DESC';
+  } else if (sortBy === 'status') {
+    orderBy = 'status ASC, created_at DESC';
+  }
+  return runAll(
+    `SELECT ticket_id, created_at, sender_name, sender_email, status FROM tickets ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+    [limit, offset]
+  );
+}
+
+function getTicketsCount() {
+  return runGet('SELECT COUNT(*) as count FROM tickets').then(row => row.count);
 }
 
 module.exports = {
@@ -173,5 +191,7 @@ module.exports = {
   rejectTicket,
   fetchTicketDetails,
   autoRejectAndCleanup,
-  undoTicketAction
+  undoTicketAction,
+  getTicketsPaginated,
+  getTicketsCount
 };
