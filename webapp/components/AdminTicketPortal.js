@@ -77,7 +77,16 @@ const AdminPortal = () => {
           <div className="row">
             <div className="col-md-12 search-table-col pt-0 mt-0">
               <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-1" style={{marginBottom: '4px', gap: 8}}>
-                <div className="w-100 d-flex justify-content-center mb-2 mb-md-0" style={{order: 0}}>
+                {/* On mobile, Quick Action (Go) on top, Sorting below. On desktop, Sorting left, Quick Action right */}
+                <div className="order-1 order-md-0 w-100 w-md-auto d-flex justify-content-center justify-content-md-start mb-2 mb-md-0">
+                  <select onChange={handleSortChange} value={sortBy} style={{minWidth: 180}}>
+                    <optgroup label="Sort by...">
+                      <option value="submission_time">Submission Time</option>
+                      <option value="status">Ticket Status</option>
+                    </optgroup>
+                  </select>
+                </div>
+                <div className="order-0 order-md-1 w-100 w-md-auto d-flex justify-content-center justify-content-md-end mb-2 mb-md-0">
                   <form
                     className="d-flex align-items-center justify-content-center"
                     style={{gap: 4, marginBottom: 0}}
@@ -126,14 +135,6 @@ const AdminPortal = () => {
                     />
                     <button type="submit" className="btn btn-primary btn-sm" style={{height: 32, fontSize: 15, borderRadius: 4}}>Go</button>
                   </form>
-                </div>
-                <div className="w-100 d-flex justify-content-center justify-content-md-end" style={{order: 1}}>
-                  <select onChange={handleSortChange} value={sortBy} style={{minWidth: 180}}>
-                    <optgroup label="Sort by...">
-                      <option value="submission_time">Submission Time</option>
-                      <option value="status">Ticket Status</option>
-                    </optgroup>
-                  </select>
                 </div>
               </div>
               <span className="counter pull-right"></span>
