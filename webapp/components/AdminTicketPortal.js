@@ -66,11 +66,16 @@ const AdminPortal = () => {
   };
 
   return (
-    <div className="container p-0 m-0" style={{maxWidth: '100%'}}>
-      <section className="p-0 m-0" style={{padding: 0, margin: 0}}>
-        <div className="container p-0 m-0" style={{padding: 0, margin: 0}}>
-          <div className="row m-0 p-0">
-            <div className="col-md-12 search-table-col p-0 m-0">
+    <div className="container pb-5 mb-5 mt-5">
+      <section className="py-5 pt-0">
+        <div className="container py-5 mt-0 pt-5">
+          <div className="row mb-5">
+            <div className="col-md-8 col-xl-6 text-center mx-auto">
+              <h2 className="fw-bold text-primary">Tickets Portal</h2>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12 search-table-col pt-0 mt-0">
               <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-1" style={{marginBottom: '4px', gap: 8}}>
                 {/* On mobile, Quick Action (Go) on top, Sorting below. On desktop, Sorting left, Quick Action right */}
                 <div className="order-1 order-md-0 w-100 w-md-auto d-flex justify-content-center justify-content-md-start mb-2 mb-md-0">

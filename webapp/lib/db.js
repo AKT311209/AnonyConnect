@@ -171,8 +171,8 @@ function getTicketsPaginated(offset, limit, sortBy = 'status', sortDir = 'ASC', 
   let where = [];
   let params = [];
   if (publicOnly) {
-    // For public tickets, allow all tickets (including password-protected)
-    // (previously: where.push('(password IS NULL OR password = "")'); )
+    // For public tickets, do not show password-protected tickets
+    where.push('(password IS NULL OR password = "")');
   }
   if (status && status !== 'All') {
     where.push('status = ?');
@@ -189,8 +189,8 @@ function getTicketsCount(status = 'All', publicOnly = false) {
   let where = [];
   let params = [];
   if (publicOnly) {
-    // For public tickets, allow all tickets (including password-protected)
-    // (previously: where.push('(password IS NULL OR password = "")'); )
+    // For public tickets, do not show password-protected tickets
+    where.push('(password IS NULL OR password = "")');
   }
   if (status && status !== 'All') {
     where.push('status = ?');
