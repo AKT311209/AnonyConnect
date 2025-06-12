@@ -10,7 +10,7 @@ const Footer = () => {
             AnonyConnect
           </a>
         </p>
-        <p style={{ marginBottom: '0' }}>Designed & Developed by <a href="https://github.com/AKT311209" target="_blank" rel="noopener noreferrer">AKT311209</a></p>
+        <p style={{ marginBottom: '0' }}>Designed & Developed by <a href="https://about.khoi.io.vn" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>AKT311209</a></p>
       </div>
     </footer>
   );

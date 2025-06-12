@@ -10,11 +10,9 @@ export default withAdminAuth(function handler(req, res) {
   if (!command || typeof command !== 'string') {
     return res.status(400).json({ error: 'No command provided' });
   }
-  // Security: Only allow certain commands, or run in a sandboxed environment in production!
-  // For demo, allow basic commands (e.g., ls, pwd, whoami, cat, etc.)
-  // You should restrict this in production!
+  // Only allow basic shell commands (SQL is now handled in SQL mode)
+  const trimmed = command.trim();
   if (command.trim() === 'clear') {
-    // Special handling for clear command
     res.status(200).json({ output: '__CLEAR__' });
     return;
   }
