@@ -2,12 +2,14 @@ import { withAdminPageAuth } from '../../utils/withAdminPageAuth';
 import AdminTicketPort from '../../components/AdminTicketPortal';
 import AdNav from '../../components/AdminNavbar';
 import Footer from '../../components/footer';
+import ToastMessage from '../../components/ToastMessage';
 
 const AdminDash = () => {
 
   return (
     <>
       <AdNav />
+      <ToastMessage header="Invalid ticket" body="The system could not find the provided ticket ID. Please try again." />
       <AdminTicketPort />
       <Footer />
     </>

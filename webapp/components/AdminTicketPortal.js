@@ -76,13 +76,65 @@ const AdminPortal = () => {
           </div>
           <div className="row">
             <div className="col-md-12 search-table-col pt-0 mt-0">
-              <div>
-                <select onChange={handleSortChange} value={sortBy}>
-                  <optgroup label="Sort by...">
-                    <option value="submission_time">Submission Time</option>
-                    <option value="status">Ticket Status</option>
-                  </optgroup>
-                </select>
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-1" style={{marginBottom: '4px', gap: 8}}>
+                <div className="w-100 d-flex justify-content-center mb-2 mb-md-0" style={{order: 0}}>
+                  <form
+                    className="d-flex align-items-center justify-content-center"
+                    style={{gap: 4, marginBottom: 0}}
+                    onSubmit={async e => {
+                      e.preventDefault();
+                      const ticketId = e.target.elements.adminTicketSearch.value.trim();
+                      if (!ticketId) return;
+                      try {
+                        const res = await fetch(`/api/admin/checkticket?ticket_id=${encodeURIComponent(ticketId)}`);
+                        if (res.status === 200) {
+                          const data = await res.json();
+                          if (data.exists) {
+                            window.open(`/admin/ticket/${ticketId}`, '_blank', 'noopener,noreferrer');
+                            return;
+                          }
+                        }
+                        // Show toast for not found or error
+                        const toast = document.getElementById('toast-1');
+                        if (toast) {
+                          let header = 'Ticket not exist';
+                          let body = 'The system could not find the provided ticket ID. Please try again.';
+                          toast.querySelector('.toast-header strong').textContent = header;
+                          toast.querySelector('.toast-body p').textContent = body;
+                          const bsToast = new window.bootstrap.Toast(toast);
+                          bsToast.show();
+                        }
+                      } catch (err) {
+                        const toast = document.getElementById('toast-1');
+                        if (toast) {
+                          let header = 'Ticket not exist';
+                          let body = 'The system could not find the provided ticket ID. Please try again.';
+                          toast.querySelector('.toast-header strong').textContent = header;
+                          toast.querySelector('.toast-body p').textContent = body;
+                          const bsToast = new window.bootstrap.Toast(toast);
+                          bsToast.show();
+                        }
+                      }
+                    }}
+                  >
+                    <input
+                      type="text"
+                      name="adminTicketSearch"
+                      placeholder="Enter ticket ID"
+                      className="form-control"
+                      style={{ width: 160, height: 32, fontSize: 15, borderRadius: 4, border: '1px solid #aab3b9', marginRight: 4 }}
+                    />
+                    <button type="submit" className="btn btn-primary btn-sm" style={{height: 32, fontSize: 15, borderRadius: 4}}>Go</button>
+                  </form>
+                </div>
+                <div className="w-100 d-flex justify-content-center justify-content-md-end" style={{order: 1}}>
+                  <select onChange={handleSortChange} value={sortBy} style={{minWidth: 180}}>
+                    <optgroup label="Sort by...">
+                      <option value="submission_time">Submission Time</option>
+                      <option value="status">Ticket Status</option>
+                    </optgroup>
+                  </select>
+                </div>
               </div>
               <span className="counter pull-right"></span>
               <div className="table-responsive results">
@@ -144,7 +196,7 @@ const AdminPortal = () => {
                 </table>
               </div>
               {/* Pagination Controls */}
-              <div className="d-flex justify-content-between align-items-center mt-3">
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3" style={{gap: 8}}>
                 <div className="d-flex align-items-center" style={{gap: 8}}>
                   <span>Page</span>
                   <form
