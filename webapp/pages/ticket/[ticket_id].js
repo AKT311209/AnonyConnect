@@ -14,6 +14,7 @@ const TicketPage = () => {
     const [isVerified, setIsVerified] = useState(false);
     const [showVerification, setShowVerification] = useState(false);
     const [ticketData, setTicketData] = useState(null);
+    const [oneTimeToken, setOneTimeToken] = useState(null);
 
     const encrypt = (text) => {
         const cipher = crypto.createCipher('aes-256-ctr', 'password');
@@ -30,25 +31,24 @@ const TicketPage = () => {
         return ticketIdPattern.test(id);
     };
 
-    const fetchTicketData = async () => {
+    const fetchTicketData = async (token) => {
         try {
             if (!isValidTicketId(ticket_id)) {
                 alert('Invalid ticket ID format');
                 router.push('/');
                 return;
             }
-            if (sessionStorage.getItem('ticketPassword')) {
-                const storedPassword = decrypt(sessionStorage.getItem('ticketPassword'));
+            if (token) {
                 const response = await fetch(`/api/message/${ticket_id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ password: storedPassword }),
+                    body: JSON.stringify({ token }),
                 });
                 const data = await response.json();
                 setTicketData(data);
-                sessionStorage.removeItem('ticketPassword'); // Clear password after fetching data
+                setOneTimeToken(null); // Clear token after use
             } else {
                 const response = await fetch(`/api/message/${ticket_id}`, {
                     method: 'POST',
@@ -94,7 +94,6 @@ const TicketPage = () => {
                 router.push('/');
                 return;
             }
-
             const response = await fetch(`/api/auth/${ticket_id}`, {
                 method: 'POST',
                 headers: {
@@ -125,11 +124,11 @@ const TicketPage = () => {
                 return;
             }
             const data = await response.json();
-            if (data.isValid) {
+            if (data.isValid && data.token) {
                 setIsVerified(true);
                 setShowVerification(false);
-                sessionStorage.setItem('ticketPassword', encrypt(password)); // Store encrypted password in sessionStorage
-                fetchTicketData();
+                setOneTimeToken(data.token);
+                fetchTicketData(data.token);
             } else {
                 const toast = document.getElementById('toast-1');
                 const bsToast = new bootstrap.Toast(toast);

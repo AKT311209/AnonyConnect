@@ -1,5 +1,4 @@
-import { getTicketById } from '../../../lib/db';
-import bcrypt from 'bcrypt';
+import { getTicketById, getValidToken, markTokenUsed } from '../../../lib/db';
 
 
 export default async function handler(req, res) {
@@ -10,14 +9,15 @@ export default async function handler(req, res) {
         if (ticket) {
             const { password, ...ticketData } = ticket; // Exclude password from response
             if (ticket.password) {
-                const { password: providedPassword} = req.body;
-                if (!providedPassword) {
-                    return res.status(401).json({ error: 'Password required' });
+                const { token: providedToken } = req.body;
+                if (!providedToken) {
+                    return res.status(401).json({ error: 'Token required' });
                 }
-                const isValid = await bcrypt.compare(providedPassword, ticket.password);
-                if (!isValid) {
-                    return res.status(401).json({ error: 'Invalid password' });
+                const validToken = await getValidToken(providedToken, ticket_id);
+                if (!validToken) {
+                    return res.status(401).json({ error: 'Invalid or expired token' });
                 }
+                await markTokenUsed(providedToken);
             }
             return res.status(200).json({
                 ...ticketData,

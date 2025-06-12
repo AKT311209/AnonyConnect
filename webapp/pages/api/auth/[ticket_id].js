@@ -1,6 +1,7 @@
-import { getTicketById } from '../../../lib/db';
+import { getTicketById, createOneTimeToken } from '../../../lib/db';
 import bcrypt from 'bcrypt';
 import verifyCloudflare from '../../../lib/verify-cloudflare';
+import { v4 as uuidv4 } from 'uuid';
 
 export default async function handler(req, res) {
     const { ticket_id } = req.query;
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
                 res.status(200).json({ passwordExists: Boolean(ticket.password) });
             } else if (req.method === 'POST') {
                 // Verify Turnstile before proceeding
-                const { password, turnstileResponse : turnstileResponse} = req.body;
+                const { password, turnstileResponse } = req.body;
                 
                 const verifyData = await verifyCloudflare(turnstileResponse);
                 if (!verifyData.success) {
@@ -20,7 +21,11 @@ export default async function handler(req, res) {
                 }
                 const isValid = await bcrypt.compare(password, ticket.password);
                 if (isValid) {
-                    res.status(200).json({ isValid: true });
+                    // Generate one-time token, valid for 5 minutes
+                    const token = uuidv4();
+                    const expires_at = Math.floor(Date.now() / 1000) + 5 * 60;
+                    await createOneTimeToken(ticket_id, token, expires_at);
+                    res.status(200).json({ isValid: true, token });
                 } else {
                     res.status(401).json({ isValid: false });
                 }

@@ -40,6 +40,18 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error creating sessions table', err3);
       }
     });
+
+    db.run(`CREATE TABLE IF NOT EXISTS ticket_tokens (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      token TEXT NOT NULL,
+      ticket_id TEXT NOT NULL,
+      used INTEGER DEFAULT 0,
+      expires_at INTEGER NOT NULL
+    )`, (err4) => {
+      if (err4) {
+        console.error('Error creating ticket_tokens table', err4);
+      }
+    });
   }
 });
 
@@ -199,6 +211,33 @@ function getTicketsCount(status = 'All', publicOnly = false) {
   return runGet(`SELECT COUNT(*) as count FROM tickets ${whereClause}`, params).then(row => row.count);
 }
 
+function createOneTimeToken(ticket_id, token, expires_at) {
+  const sql = 'INSERT INTO ticket_tokens (token, ticket_id, expires_at) VALUES (?, ?, ?)';
+  return runExec(sql, [token, ticket_id, expires_at]);
+}
+
+function getValidToken(token, ticket_id) {
+  const now = Math.floor(Date.now() / 1000);
+  return runGet('SELECT * FROM ticket_tokens WHERE token = ? AND ticket_id = ? AND used = 0 AND expires_at > ?', [token, ticket_id, now]);
+}
+
+function markTokenUsed(token) {
+  return runExec('UPDATE ticket_tokens SET used = 1 WHERE token = ?', [token]);
+}
+
+function cleanupExpiredTokens() {
+  const now = Math.floor(Date.now() / 1000);
+  db.run('DELETE FROM ticket_tokens WHERE expires_at <= ?', [now], (err) => {
+    if (err) {
+      if (typeof window === 'undefined') {
+        console.error('Error deleting expired tokens', err);
+      }
+    }
+  });
+}
+
+setInterval(cleanupExpiredTokens, 60 * 60 * 1000); // Clean up expired tokens every hour
+
 module.exports = {
   db,
   createTicket,
@@ -214,5 +253,8 @@ module.exports = {
   autoRejectAndCleanup,
   undoTicketAction,
   getTicketsPaginated,
-  getTicketsCount
+  getTicketsCount,
+  createOneTimeToken,
+  getValidToken,
+  markTokenUsed,
 };
