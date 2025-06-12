@@ -76,7 +76,7 @@ const TicketPublicPortal = () => {
               </div>
               <span className="counter pull-right"></span>
               <div className="table-responsive results" style={{marginBottom: 0, paddingBottom: 0, minHeight: 0, height: 'auto'}}>
-                <table className="table table-hover table-bordered" style={{ tableLayout: 'auto', width: '100%', minWidth: 600, marginBottom: 0, minHeight: 0, height: 'auto' }}>
+                <table className="table table-hover table-bordered" style={{ tableLayout: 'auto', width: '100%', minWidth: 600, marginBottom: 15, minHeight: 0, height: 'auto' }}>
                   <thead className="bill-header cs">
                     <tr>
                       <th className="col-lg-1" style={{ fontSize: '16px' }}>Ticket ID</th>
