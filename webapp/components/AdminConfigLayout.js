@@ -53,15 +53,6 @@ function ConfigStatus({ error, success }) {
   );
 }
 
-function ConfigFooter() {
-  return (
-    <footer className="text-center bg-primary-gradient mt-5" style={{ background: 'var(--bs-light)' }}>
-      <div className="container text-center py-4 py-lg-5 mt-0">
-        <p className="mb-0">Copyright © 2025 AnonyConnect</p>
-      </div>
-    </footer>
-  );
-}
 
 export default function AdminConfigLayout({
   loading,
@@ -130,7 +121,6 @@ export default function AdminConfigLayout({
           <header></header>
         </section>
       </div>
-      <ConfigFooter />
     </>
   );
 }

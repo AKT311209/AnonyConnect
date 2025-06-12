@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 const AdminIndex = () => {
   const router = useRouter();
@@ -9,7 +10,13 @@ const AdminIndex = () => {
     router.push('/admin/tickets');
   }, [router]);
 
-  return null;
+  return (
+    <>
+      <Head>
+        <title>AnonyConnect – Admin</title>
+      </Head>
+    </>
+  );
 };
 
 export default AdminIndex;

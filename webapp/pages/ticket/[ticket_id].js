@@ -6,6 +6,7 @@ import NavBar from '../../components/navbar';
 import Footer from '../../components/footer';
 import TicketVerification from '../../components/ticketverificationform';
 import TicketDetail from '../../components/ticketdetail';
+import Head from 'next/head';
 
 const TicketPage = () => {
     const router = useRouter();
@@ -141,6 +142,9 @@ const TicketPage = () => {
 
     return (
         <>
+            <Head>
+                <title>AnonyConnect – Ticket Details</title>
+            </Head>
             <NavBar />
 
             <div>

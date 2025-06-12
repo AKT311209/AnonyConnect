@@ -4,6 +4,7 @@ import AdminNavBar from '../../components/AdminNavbar';
 import Footer from '../../components/footer';
 import { Terminal } from '@xterm/xterm';
 import '@xterm/xterm/css/xterm.css';
+import Head from 'next/head';
 
 function AdminTerminal() {
   const xtermRef = useRef(null);
@@ -335,6 +336,9 @@ function AdminTerminal() {
 function AdminManagement() {
   return (
     <>
+      <Head>
+        <title>AnonyConnect – Admin Management</title>
+      </Head>
       <AdminNavBar />
       <AdminTerminal />
       <Footer />

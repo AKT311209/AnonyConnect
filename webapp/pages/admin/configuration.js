@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { withAdminPageAuth } from '../../utils/withAdminPageAuth';
 import AdminNavBar from '../../components/AdminNavbar';
 import AdminConfigLayout from '../../components/AdminConfigLayout';
-
+import Head from 'next/head';
+import Footer from '../../components/footer';
 function AdminConfig() {
   const [config, setConfig] = useState('');
   const [loading, setLoading] = useState(true);
@@ -44,6 +45,9 @@ function AdminConfig() {
 
   return (
     <>
+      <Head>
+        <title>AnonyConnect – Admin Configuration</title>
+      </Head>
       <AdminNavBar />
       <AdminConfigLayout
         loading={loading}
@@ -54,6 +58,7 @@ function AdminConfig() {
         success={success}
         handleSave={handleSave}
       />
+      <Footer />
     </>
   );
 }

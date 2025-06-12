@@ -4,6 +4,7 @@ import Footer from '../../../components/footer';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { withAdminPageAuth } from '../../../utils/withAdminPageAuth';
+import Head from 'next/head';
 
 const AdminTicketDetail = () => {
   const router = useRouter();
@@ -29,6 +30,9 @@ const AdminTicketDetail = () => {
 
   return (
     <>
+      <Head>
+        <title>AnonyConnect – Admin Ticket Details</title>
+      </Head>
       <AdNav />
       {ticket_id && <AdTicketDetail ticketId={ticket_id} />}
       <Footer />

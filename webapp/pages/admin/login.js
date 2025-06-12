@@ -4,6 +4,7 @@ import AdminLoginForm from '../../components/AdminLogin';
 import AdNav from '../../components/AdminNavbar';
 import Footer from '../../components/footer';
 import ToastMessage from '../../components/ToastMessage';
+import Head from 'next/head';
 
 const AdminLoginPage = () => {
   const router = useRouter();
@@ -53,6 +54,9 @@ const AdminLoginPage = () => {
 
   return (
     <>
+      <Head>
+        <title>AnonyConnect – Admin Login</title>
+      </Head>
       <AdNav />
       <AdminLoginForm onLogin={handleLogin} />
       <ToastMessage header="Invalid password" body="Password is invalid, please try again." />
