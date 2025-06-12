@@ -15,7 +15,8 @@
     ],
     "notificationSettings": {
         "onTicketCreated": true,
-        "onAdminLogin": true
+        "onAdminLogin": true,
+        "onAdminLoginAttempt": true
     },
     "appearance": {
         "admin": {

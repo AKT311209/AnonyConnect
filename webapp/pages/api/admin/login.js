@@ -48,6 +48,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ sessionId });
     });
   } else {
+    // Notify on failed admin login attempt if enabled
+    const notificationSettings = getNotificationSettings();
+    if (notificationSettings.onAdminLoginAttempt) {
+      await sendCustomTelegramNotification('AnonyConnect: Failed admin login attempt detected.');
+    }
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 }
