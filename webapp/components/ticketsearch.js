@@ -16,7 +16,9 @@ const TicketSearch = () => {
         event.preventDefault();
         if (!turnstileValid) return;
         const ticketId = event.target.elements[0].value;
-        const turnstileResponse = event.target.elements[1].value;
+        // Find the Turnstile input by name or type, not by index
+        const turnstileInput = event.target.querySelector('input[name="cf-turnstile-response"], input[name="g-recaptcha-response"]');
+        const turnstileResponse = turnstileInput ? turnstileInput.value : '';
 
         if (!isValidTicketId(ticketId)) {
             const toast = document.getElementById('toast-1');
