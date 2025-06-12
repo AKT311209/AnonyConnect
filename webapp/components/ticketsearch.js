@@ -69,33 +69,39 @@ const TicketSearch = () => {
                     <div className="row">
                         <div className="col mb-0 pb-0 mt-0 pt-0">
                             <form className="bg-transparent border-0 shadow-none search-form" onSubmit={handleSubmit}>
-                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none">
+                                <div className="input-group bg-transparent bg-opacity-75 border-0 border-black shadow-none flex-wrap flex-md-nowrap">
                                     <span className="border-0 shadow-sm input-group-text">
                                         <FontAwesomeIcon icon={faListAlt} />
                                     </span>
                                     <input
                                         className="border-0 shadow-sm form-control"
                                         type="text"
-                                        placeholder="Your ticket ID (xxx-xxx)"
+                                        placeholder={typeof window !== 'undefined' && window.innerWidth < 576 ? 'Ticket ID' : 'Your ticket ID (xxx-xxx)'}
                                         required
-                                    />
-                                    <TurnstileWidget
-                                        onSuccess={(token) => {
-                                            setTurnstileToken(token);
-                                            setTurnstileValid(true);
-                                        }}
-                                        onExpire={() => {
-                                            setTurnstileToken('');
-                                            setTurnstileValid(false);
-                                        }}
+                                        style={{ minWidth: 0, maxWidth: '100%', flex: 1 }}
                                     />
                                     <button
                                         className="btn btn-light border-0 shadow-sm"
                                         type="submit"
                                         disabled={!turnstileValid}
+                                        style={{ whiteSpace: 'nowrap' }}
                                     >
                                         View
                                     </button>
+                                </div>
+                                <div className="d-flex justify-content-end mt-2 w-100">
+                                    <div style={{ minWidth: 120 }}>
+                                        <TurnstileWidget
+                                            onSuccess={(token) => {
+                                                setTurnstileToken(token);
+                                                setTurnstileValid(true);
+                                            }}
+                                            onExpire={() => {
+                                                setTurnstileToken('');
+                                                setTurnstileValid(false);
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </form>
                         </div>
