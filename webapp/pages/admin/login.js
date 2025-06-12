@@ -59,7 +59,7 @@ const AdminLoginPage = () => {
       </Head>
       <AdNav />
       <AdminLoginForm onLogin={handleLogin} />
-      <ToastMessage header="Invalid password" body="Password is invalid, please try again." />
+      <ToastMessage header="Invalid credentials" body="Password or username is invalid, please try again." />
       <Footer />
     </>
   );
