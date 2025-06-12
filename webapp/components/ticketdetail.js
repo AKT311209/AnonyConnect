@@ -83,15 +83,10 @@ const TicketDetail = ({ ticketData }) => {
     };
     
     return (
-        <div className="container pb-5 mb-5 mt-5">
-            <section className="py-5 pt-0">
-                <div className="container py-5 mt-0 pt-5">
-                    <div className="row mb-5">
-                        <div className="col-md-8 col-xl-6 text-center mx-auto">
-                            <h2 className="fw-bold text-primary">Ticket details</h2>
-                        </div>
-                    </div>
-                    <div className="row">
+        <div className="container p-0 m-0" style={{maxWidth: '100%'}}>
+            <section className="p-0 m-0" style={{padding: 0, margin: 0}}>
+                <div className="container p-0 m-0" style={{padding: 0, margin: 0}}>
+                    <div className="row m-0 p-0">
                         <div className="col mb-0 pb-0">
                             <div className="accordion" role="tablist" id="accordion-1">
                                 <div className="accordion-item">

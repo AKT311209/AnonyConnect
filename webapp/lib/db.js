@@ -161,21 +161,43 @@ function undoTicketAction(ticketId) {
   return runExec("UPDATE tickets SET status = 'Pending', response = NULL WHERE ticket_id = ?", [ticketId]);
 }
 
-function getTicketsPaginated(offset, limit, sortBy = 'status', sortDir = 'ASC') {
+function getTicketsPaginated(offset, limit, sortBy = 'status', sortDir = 'ASC', status = 'All', publicOnly = false) {
   let orderBy = 'status ASC, created_at DESC';
   if (sortBy === 'submission_time') {
     orderBy = 'created_at DESC';
   } else if (sortBy === 'status') {
     orderBy = 'status ASC, created_at DESC';
   }
+  let where = [];
+  let params = [];
+  if (publicOnly) {
+    // For public tickets, allow all tickets (including password-protected)
+    // (previously: where.push('(password IS NULL OR password = "")'); )
+  }
+  if (status && status !== 'All') {
+    where.push('status = ?');
+    params.push(status);
+  }
+  let whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
   return runAll(
-    `SELECT ticket_id, created_at, sender_name, sender_email, status FROM tickets ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
-    [limit, offset]
+    `SELECT ticket_id, created_at, sender_name, sender_email, status FROM tickets ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+    [...params, limit, offset]
   );
 }
 
-function getTicketsCount() {
-  return runGet('SELECT COUNT(*) as count FROM tickets').then(row => row.count);
+function getTicketsCount(status = 'All', publicOnly = false) {
+  let where = [];
+  let params = [];
+  if (publicOnly) {
+    // For public tickets, allow all tickets (including password-protected)
+    // (previously: where.push('(password IS NULL OR password = "")'); )
+  }
+  if (status && status !== 'All') {
+    where.push('status = ?');
+    params.push(status);
+  }
+  let whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+  return runGet(`SELECT COUNT(*) as count FROM tickets ${whereClause}`, params).then(row => row.count);
 }
 
 module.exports = {

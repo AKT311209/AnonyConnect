@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListAlt } from '@fortawesome/free-regular-svg-icons';
 import TurnstileWidget from './TurnstileWidget';
+import TicketPublicPortal from './TicketPublicPortal';
 
 const TicketSearch = () => {
     const [turnstileToken, setTurnstileToken] = useState('');
@@ -58,8 +59,8 @@ const TicketSearch = () => {
 
     return (
         <div className="container pb-5 mb-5 mt-5">
-            <section className="py-5 pt-0">
-                <div className="container py-5 mt-0 pt-5">
+            <section className="py-0 pt-0">
+                <div className="container py-0 mt-0 pt-5">
                     <div className="row mb-5">
                         <div className="col-md-8 col-xl-6 text-center mx-auto">
                             <h2 className="fw-bold text-primary">Contact tickets</h2>
@@ -111,6 +112,7 @@ const TicketSearch = () => {
             <section>
                 <header></header>
             </section>
+            <TicketPublicPortal />
         </div>
     );
 };
