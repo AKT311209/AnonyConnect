@@ -161,10 +161,6 @@ function AdminTerminal() {
       }
     };
     term.onData(onData);
-
-    // Remove custom copy/paste handler to allow native clipboard behavior
-    // (xterm.js supports native clipboard by default)
-    // No need to add or remove any keydown event listeners for copy/paste
     return () => {
       if (term && typeof term.dispose === 'function') {
         term.dispose(); // Clean up terminal instance
