@@ -14,6 +14,7 @@ RUN npm install --production
 COPY . .
 
 # Copy the config.json file into the image
+RUN mkdir -p /app/storage
 COPY storage/config.json /app/storage/config.json
 
 # Expose Next.js default port
