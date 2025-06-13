@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  webapp:
+    build: .
+    container_name: anonyconnect_webapp
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./storage:/app/storage
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
