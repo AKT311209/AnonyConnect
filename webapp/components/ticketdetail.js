@@ -72,12 +72,14 @@ const TicketDetail = ({ ticketData }) => {
                 maxWidth: '100%',
                 overflowX: 'auto',
                 padding: '8px',
-                background: '#fff', // match exact white background
+                background: '#fff',
                 borderRadius: '6px',
                 fontFamily: 'inherit',
                 fontSize: '1rem',
             }}>
-                {message}
+                <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                    {message || ''}
+                </ReactMarkdown>
             </div>
         );
     };
