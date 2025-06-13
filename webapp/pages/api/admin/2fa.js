@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
 import fs from 'fs';
 import path from 'path';
-import { send } from 'process';
 
 const secret = process.env.NEXTAUTH_SECRET;
 const configPath = path.resolve(process.cwd(), 'storage', 'config.json');
