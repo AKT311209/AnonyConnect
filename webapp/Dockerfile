@@ -24,5 +24,5 @@ EXPOSE 3000
 RUN npm run build
 
 # Start the Next.js app
-RUN [ls, "-la", "/app/storage"]
+RUN ls /app/storage
 CMD ["npm", "start"]
