@@ -22,6 +22,12 @@ RUN chmod +x /app/docker-entrypoint.sh
 # Expose Next.js default port
 EXPOSE 3000
 
+# Accept build-time public env vars
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+ENV NEXT_PUBLIC_TURNSTILE_SITE_KEY=$NEXT_PUBLIC_TURNSTILE_SITE_KEY
+
 # Build Next.js app
 RUN npm run build
 
