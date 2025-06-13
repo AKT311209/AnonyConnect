@@ -22,14 +22,7 @@ RUN chmod +x /app/docker-entrypoint.sh
 # Expose Next.js default port
 EXPOSE 3000
 
-# Accept build-time public env vars
-ARG NEXT_PUBLIC_BASE_URL
-ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY
-ENV NEXT_PUBLIC_BASE_URL=https://connect.khoi.io.vn
-ENV NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAAA-RcQdPu6mWgu-p
-
-# Build Next.js app
-RUN npm run build
+# Do NOT run next build here! Client will run next build with their own env vars at container startup
 
 # Start the app using the entrypoint script
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
