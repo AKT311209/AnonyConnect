@@ -41,6 +41,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PAT }}
+      - name: Change to webapp directory
+        run: cd webapp
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
