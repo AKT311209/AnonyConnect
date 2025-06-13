@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   webapp:
-    build: .
-    container_name: anonyconnect_webapp
+    image: akt311209/anonyconnect:latest
+    container_name: anonyconnect
     ports:
       - "3000:3000"
     volumes:
