@@ -46,6 +46,20 @@ const ContactSection = () => {
                 const toast = new window.bootstrap.Toast(toastElement);
                 toast.show();
             }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
+            return;
+        }
+
+        // Client-side validation for email format (optional, add if needed)
+        if (data.email && !/^\S+@\S+\.\S+$/.test(data.email)) {
+            const toastElement = document.getElementById('toast-1');
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Invalid email';
+                toastElement.querySelector('.toast-body p').textContent = 'Please enter a valid email address.';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
