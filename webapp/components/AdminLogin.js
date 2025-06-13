@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import TurnstileWidget from './TurnstileWidget';
+import Admin2FADialog from './Admin2FADialog';
 
-const AdminLoginForm = ({ onLogin }) => {
+const AdminLoginForm = ({ onLogin, on2FASubmit, show2FA, twoFAToken, twoFALoading, twoFAError }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -46,6 +47,13 @@ const AdminLoginForm = ({ onLogin }) => {
           </form>
         </div>
       </div>
+      <Admin2FADialog
+        open={show2FA}
+        onSubmit={on2FASubmit}
+        onClose={() => { window.location.reload(); }}
+        error={twoFAError}
+        loading={twoFALoading}
+      />
     </section>
   );
 };

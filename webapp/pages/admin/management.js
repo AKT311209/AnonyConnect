@@ -278,7 +278,18 @@ function AdminTerminal() {
                               });
                               const data = await res.json();
                               if (res.ok) {
-                                setSqlOutput(data.output || '');
+                                // If output is an array of objects, format as a table
+                                if (Array.isArray(data.output) && data.output.length > 0 && typeof data.output[0] === 'object') {
+                                  const keys = Object.keys(data.output[0]);
+                                  const header = keys.join(' | ');
+                                  const separator = keys.map(() => '---').join(' | ');
+                                  const rows = data.output.map(row => keys.map(k => String(row[k])).join(' | '));
+                                  setSqlOutput([header, separator, ...rows].join('\n'));
+                                } else if (Array.isArray(data.output)) {
+                                  setSqlOutput(data.output.join('\n'));
+                                } else {
+                                  setSqlOutput(data.output || '');
+                                }
                               } else {
                                 setSqlOutput(data.error || 'Unknown error');
                               }
@@ -307,7 +318,18 @@ function AdminTerminal() {
                           });
                           const data = await res.json();
                           if (res.ok) {
-                            setSqlOutput(data.output || '');
+                            // If output is an array of objects, format as a table
+                            if (Array.isArray(data.output) && data.output.length > 0 && typeof data.output[0] === 'object') {
+                              const keys = Object.keys(data.output[0]);
+                              const header = keys.join(' | ');
+                              const separator = keys.map(() => '---').join(' | ');
+                              const rows = data.output.map(row => keys.map(k => String(row[k])).join(' | '));
+                              setSqlOutput([header, separator, ...rows].join('\n'));
+                            } else if (Array.isArray(data.output)) {
+                              setSqlOutput(data.output.join('\n'));
+                            } else {
+                              setSqlOutput(data.output || '');
+                            }
                           } else {
                             setSqlOutput(data.error || 'Unknown error');
                           }

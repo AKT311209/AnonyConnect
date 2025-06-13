@@ -6,8 +6,20 @@ const AdminIndex = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to /admin/tickets
-    router.push('/admin/tickets');
+    // Check if 2FA is enabled and not set up, redirect to /admin/2fa-setup
+    async function check2FA() {
+      const res = await fetch('/api/admin/2fa');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.enabled && !data.setup) {
+          router.replace('/admin/2fa-setup');
+          return;
+        }
+      }
+      // Otherwise, redirect to /admin/tickets
+      router.push('/admin/tickets');
+    }
+    check2FA();
   }, [router]);
 
   return (

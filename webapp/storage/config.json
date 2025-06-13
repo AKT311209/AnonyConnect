@@ -22,5 +22,12 @@
         "admin": {
             "ticketsPagination": 5
         }
+    },
+    "security": {
+        "admin": {
+            "2fa": {
+                "enabled": true
+            }
+        }
     }
 }

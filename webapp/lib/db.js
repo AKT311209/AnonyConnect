@@ -52,6 +52,27 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error creating ticket_tokens table', err4);
       }
     });
+
+    db.run(`CREATE TABLE IF NOT EXISTS admin_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )`, (err5) => {
+      if (err5) {
+        console.error('Error creating admin_settings table', err5);
+      }
+    });
+
+    db.run(`CREATE TABLE IF NOT EXISTS admin_login_tokens (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      token TEXT NOT NULL,
+      username TEXT NOT NULL,
+      expires_at INTEGER NOT NULL,
+      used INTEGER DEFAULT 0
+    )`, (err6) => {
+      if (err6) {
+        console.error('Error creating admin_login_tokens table', err6);
+      }
+    });
   }
 });
 
@@ -238,6 +259,101 @@ function cleanupExpiredTokens() {
 
 setInterval(cleanupExpiredTokens, 60 * 60 * 1000); // Clean up expired tokens every hour
 
+// Centralized DB actions for admin_settings
+function getAdminSetting(key) {
+  return new Promise((resolve, reject) => {
+    db.get('SELECT value FROM admin_settings WHERE key = ?', [key], (err, row) => {
+      if (err) return reject(err);
+      resolve(row ? row.value : null);
+    });
+  });
+}
+
+function setAdminSetting(key, value) {
+  return new Promise((resolve, reject) => {
+    db.run('INSERT OR REPLACE INTO admin_settings (key, value) VALUES (?, ?)', [key, value], function(err) {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
+function removeAdminSetting(key) {
+  return new Promise((resolve, reject) => {
+    db.run('DELETE FROM admin_settings WHERE key = ?', [key], function(err) {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
+function clear2FASettings() {
+  return new Promise((resolve, reject) => {
+    db.run('DELETE FROM admin_settings WHERE key = "2fa_secret"', [], function(err) {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
+async function runArbitrarySql(sql) {
+  // Only allow SELECT/PRAGMA/EXPLAIN/SHOW/BEGIN/ROLLBACK/COMMIT/INSERT/UPDATE/DELETE/CREATE/DROP/ALTER
+  const safe = /^(select|pragma|explain|show|begin|rollback|commit|insert|update|delete|create|drop|alter)\b/i.test(sql.trim());
+  if (!safe) throw new Error('Only standard SQL statements are allowed.');
+  if (/^select\b/i.test(sql.trim())) {
+    return runAll(sql);
+  } else {
+    const changes = await runExec(sql);
+    return `Query OK. Rows affected: ${changes}`;
+  }
+}
+
+// Admin login tokens helpers
+function createAdminLoginToken(token, username, expires_at) {
+  return new Promise((resolve, reject) => {
+    db.run('INSERT INTO admin_login_tokens (token, username, expires_at) VALUES (?, ?, ?)', [token, username, expires_at], function(err) {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
+function getValidAdminLoginToken(token) {
+  const now = Math.floor(Date.now() / 1000);
+  return new Promise((resolve, reject) => {
+    db.get('SELECT * FROM admin_login_tokens WHERE token = ? AND used = 0 AND expires_at > ?', [token, now], (err, row) => {
+      if (err) return reject(err);
+      resolve(row);
+    });
+  });
+}
+
+function markAdminLoginTokenUsed(token) {
+  return new Promise((resolve, reject) => {
+    db.run('UPDATE admin_login_tokens SET used = 1 WHERE token = ?', [token], function(err) {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
+function cleanupExpiredAdminLoginTokens() {
+  const now = Math.floor(Date.now() / 1000);
+  db.run('DELETE FROM admin_login_tokens WHERE expires_at <= ?', [now], (err) => {
+    if (err) {
+      if (typeof window === 'undefined') {
+        console.error('Error deleting expired admin login tokens', err);
+      }
+    }
+  });
+}
+
+setInterval(cleanupExpiredAdminLoginTokens, 60 * 60 * 1000); // Clean up expired admin login tokens every hour
+
+function deleteAllAdminSessions() {
+  return runExec('DELETE FROM sessions WHERE username = ?', [process.env.ADMIN_USERNAME]);
+}
+
 module.exports = {
   db,
   createTicket,
@@ -257,4 +373,13 @@ module.exports = {
   createOneTimeToken,
   getValidToken,
   markTokenUsed,
+  getAdminSetting,
+  setAdminSetting,
+  runArbitrarySql,
+  removeAdminSetting,
+  clear2FASettings,
+  createAdminLoginToken,
+  getValidAdminLoginToken,
+  markAdminLoginTokenUsed,
+  deleteAllAdminSessions,
 };

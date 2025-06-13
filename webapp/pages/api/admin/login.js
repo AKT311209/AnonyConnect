@@ -1,11 +1,22 @@
 import jwt from 'jsonwebtoken';
-import { db } from '../../../lib/db';
+import { db, getAdminSetting, createAdminLoginToken } from '../../../lib/db';
 import { v4 as uuidv4 } from 'uuid';
-import { serialize } from 'cookie';
 import verifyCloudflare from '../../../lib/verify-cloudflare';
 import { getNotificationSettings, sendCustomTelegramNotification } from '../../../scripts/sendTelegramNotification';
+import fs from 'fs';
+import path from 'path';
 
 const secret = process.env.NEXTAUTH_SECRET;
+const configPath = path.resolve(process.cwd(), 'storage', 'config.json');
+
+function get2FAConfig() {
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+  return config.security?.admin?.['2fa']?.enabled;
+}
+
+async function is2FASetUp() {
+  return !!(await getAdminSetting('2fa_secret'));
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -24,29 +35,18 @@ export default async function handler(req, res) {
     const maxAge = rememberMe ? 30 * 24 * 60 * 60 : 60 * 60;
     const sessionId = uuidv4();
     const token = jwt.sign({ username, sessionId }, secret, { expiresIn: maxAge });
-
-    db.run('INSERT INTO sessions (session_id, username, max_age) VALUES (?, ?, ?)', [sessionId, username, maxAge], async (err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-
-      const cookie = serialize('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
-        maxAge,
-        path: '/',
-      });
-
-      res.setHeader('Set-Cookie', cookie);
-
-      // Notify on admin login if enabled
-      const notificationSettings = getNotificationSettings();
-      if (notificationSettings.onAdminLogin) {
-        await sendCustomTelegramNotification('AnonyConnect: Someone has just logged to admin account');
-      }
-
-      return res.status(200).json({ sessionId });
-    });
+    // Create a one-time login token in DB, do not insert session or set cookie here
+    const expires_at = Math.floor(Date.now() / 1000) + maxAge;
+    await createAdminLoginToken(token, username, expires_at);
+    // 2FA logic
+    const twoFAEnabled = get2FAConfig();
+    const twoFASetUp = twoFAEnabled ? await is2FASetUp() : false;
+    if (twoFAEnabled && twoFASetUp) {
+      // Return one-time token, do not set cookie
+      return res.status(200).json({ sessionId, token, require2FA: true });
+    }
+    // If 2FA not enabled or not set up, allow login as before
+    return res.status(200).json({ sessionId, token, require2FA: false });
   } else {
     // Notify on failed admin login attempt if enabled
     const notificationSettings = getNotificationSettings();
