@@ -4,4 +4,4 @@ dist
 .next
 .env
 .DS_Store
-storage
+storage/database.sqlite
