@@ -12,68 +12,58 @@ const dbPath = path.resolve(storageDir, 'database.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening database', err);
-  } else {
-    db.run(`CREATE TABLE IF NOT EXISTS tickets (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      ticket_id TEXT NOT NULL,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-      sender_name TEXT,
-      sender_email TEXT,
-      message TEXT NOT NULL,
-      password TEXT,
-      status TEXT DEFAULT 'Pending',
-      response TEXT
-    )`, (err2) => {
-      if (err2) {
-        console.error('Error creating table', err2);
-      }
-    });
-
-    db.run(`CREATE TABLE IF NOT EXISTS sessions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      session_id TEXT NOT NULL,
-      username TEXT NOT NULL,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-      max_age INTEGER NOT NULL
-    )`, (err3) => {
-      if (err3) {
-        console.error('Error creating sessions table', err3);
-      }
-    });
-
-    db.run(`CREATE TABLE IF NOT EXISTS ticket_tokens (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      token TEXT NOT NULL,
-      ticket_id TEXT NOT NULL,
-      used INTEGER DEFAULT 0,
-      expires_at INTEGER NOT NULL
-    )`, (err4) => {
-      if (err4) {
-        console.error('Error creating ticket_tokens table', err4);
-      }
-    });
-
-    db.run(`CREATE TABLE IF NOT EXISTS admin_settings (
-      key TEXT PRIMARY KEY,
-      value TEXT
-    )`, (err5) => {
-      if (err5) {
-        console.error('Error creating admin_settings table', err5);
-      }
-    });
-
-    db.run(`CREATE TABLE IF NOT EXISTS admin_login_tokens (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      token TEXT NOT NULL,
-      username TEXT NOT NULL,
-      expires_at INTEGER NOT NULL,
-      used INTEGER DEFAULT 0
-    )`, (err6) => {
-      if (err6) {
-        console.error('Error creating admin_login_tokens table', err6);
-      }
-    });
   }
+});
+
+const dbReady = new Promise((resolve, reject) => {
+  let pending = 6;
+  function checkDone(err) {
+    if (err) {
+      reject(err);
+    } else if (--pending === 0) {
+      resolve();
+    }
+  }
+  db.run(`CREATE TABLE IF NOT EXISTS tickets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticket_id TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    sender_name TEXT,
+    sender_email TEXT,
+    message TEXT NOT NULL,
+    password TEXT,
+    status TEXT DEFAULT 'Pending',
+    response TEXT
+  )`, checkDone);
+
+  db.run(`CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    username TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    max_age INTEGER NOT NULL
+  )`, checkDone);
+
+  db.run(`CREATE TABLE IF NOT EXISTS ticket_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token TEXT NOT NULL,
+    ticket_id TEXT NOT NULL,
+    used INTEGER DEFAULT 0,
+    expires_at INTEGER NOT NULL
+  )`, checkDone);
+
+  db.run(`CREATE TABLE IF NOT EXISTS admin_settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+  )`, checkDone);
+
+  db.run(`CREATE TABLE IF NOT EXISTS admin_login_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token TEXT NOT NULL,
+    username TEXT NOT NULL,
+    expires_at INTEGER NOT NULL,
+    used INTEGER DEFAULT 0
+  )`, checkDone);
 });
 
 // Generic helpers
@@ -356,6 +346,7 @@ function deleteAllAdminSessions() {
 
 module.exports = {
   db,
+  dbReady,
   createTicket,
   checkDuplicateTicketId,
   getTicketById,

@@ -1,7 +1,7 @@
 // Node script to run auto-reject and auto-cleanup (for Windows Task Scheduler or manual use)
 const path = require('path');
 const fs = require('fs');
-const { autoRejectAndCleanup } = require('../lib/db');
+const { autoRejectAndCleanup, dbReady } = require('../lib/db');
 
 const configPath = path.resolve(__dirname, '../storage/config.json');
 
@@ -27,4 +27,9 @@ function runLoop() {
   });
 }
 
-runLoop();
+dbReady.then(() => {
+  runLoop();
+}).catch((err) => {
+  console.error('Database initialization failed:', err);
+  process.exit(1);
+});
