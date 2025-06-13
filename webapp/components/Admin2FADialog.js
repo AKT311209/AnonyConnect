@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import SixDigitInput from './SixDigitInput';
 
 export default function Admin2FADialog({ open, onSubmit, onClose, error, loading }) {
   const [code, setCode] = useState('');
@@ -15,20 +16,14 @@ export default function Admin2FADialog({ open, onSubmit, onClose, error, loading
           </div>
           <div className="modal-body">
             <p>Enter the 6-digit code from your authenticator app.</p>
-            <input
-              type="text"
-              className="form-control mb-2"
-              maxLength={6}
-              value={code}
-              onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
-              autoFocus
-              disabled={loading}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && code.length === 6 && !loading) {
-                  onSubmit(code);
-                }
-              }}
-            />
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 12 }}>
+              <SixDigitInput
+                value={code}
+                onChange={setCode}
+                onComplete={() => code.length === 6 && onSubmit(code)}
+                disabled={loading}
+              />
+            </div>
             {error && <div className="alert alert-danger py-1">{error}</div>}
           </div>
           <div className="modal-footer">
