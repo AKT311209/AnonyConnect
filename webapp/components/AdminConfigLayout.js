@@ -61,7 +61,8 @@ export default function AdminConfigLayout({
   saving,
   error,
   success,
-  handleSave
+  handleSave,
+  onReset // <-- add onReset prop
 }) {
   const [editorHeight, setEditorHeight] = useState(250);
   const editorRef = useRef(null);
@@ -110,6 +111,15 @@ export default function AdminConfigLayout({
                       disabled={saving || loading}
                     >
                       Save
+                    </button>
+                    <button
+                      className="btn border rounded-0 fixed-size-btn pe-4 ps-4 ms-2 mt-2"
+                      type="button"
+                      style={{ background: 'var(--bs-secondary)', color: 'var(--bs-light)', fontSize: 14 }}
+                      onClick={onReset}
+                      disabled={saving || loading}
+                    >
+                      Reset
                     </button>
                   </div>
                 </div>

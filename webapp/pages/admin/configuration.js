@@ -57,6 +57,20 @@ function AdminConfig() {
         error={error}
         success={success}
         handleSave={handleSave}
+        onReset={async () => {
+          setLoading(true);
+          setError('');
+          setSuccess(false);
+          try {
+            const res = await fetch('/api/admin/getDefaultConfig');
+            if (!res.ok) throw new Error('Failed to fetch default config');
+            const data = await res.json();
+            setConfig(JSON.stringify(data, null, 4));
+          } catch (e) {
+            setError('Failed to load default config');
+          }
+          setLoading(false);
+        }}
       />
       <Footer />
     </>

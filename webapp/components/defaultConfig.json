@@ -1,0 +1,33 @@
+{
+    "autoReject": {
+        "enabled": true,
+        "timeout": 2592000
+    },
+    "autoCleanup": {
+        "enabled": true,
+        "timeout": 2592000
+    },
+    "notification": [
+        {
+            "type": "Telegram",
+            "enabled": true
+        }
+    ],
+    "notificationSettings": {
+        "onTicketCreated": true,
+        "onAdminLogin": true,
+        "onAdminLoginAttempt": true
+    },
+    "appearance": {
+        "admin": {
+            "ticketsPagination": 5
+        }
+    },
+    "security": {
+        "admin": {
+            "2fa": {
+                "enabled": true
+            }
+        }
+    }
+}
