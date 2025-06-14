@@ -1,4 +1,5 @@
 // Node script to run auto-reject and auto-cleanup (for Windows Task Scheduler or manual use)
+console.log('cron-tickets.js script started');
 const path = require('path');
 const fs = require('fs');
 const { autoRejectAndCleanup, dbReady } = require('../lib/db');
