@@ -101,25 +101,25 @@ export default function AdminConfigLayout({
               <div className="col">
                 <ConfigEditor loading={loading} config={config} setConfig={setConfig} editorHeight={editorHeight} editorRef={editorRef} />
                 <ConfigStatus error={error} success={success} />
-                <div className="d-flex justify-content-end">
-                  <div className="btn-group btn-group-equal" role="group">
+                <div className="d-flex justify-content-between">
+                  <div className="btn-group btn-group-equal" role="group" style={{ width: '100%' }}>
                     <button
-                      className="btn border rounded-0 fixed-size-btn pe-4 ps-4 me-0 ms-4 mt-2"
+                      className="btn border rounded-0 fixed-size-btn pe-4 ps-4 me-2 mt-2 btn-danger"
                       type="button"
-                      style={{ background: 'var(--bs-primary)', color: 'var(--bs-light)', fontSize: 14 }}
-                      onClick={handleSaveTrim}
-                      disabled={saving || loading}
-                    >
-                      Save
-                    </button>
-                    <button
-                      className="btn border rounded-0 fixed-size-btn pe-4 ps-4 ms-2 mt-2"
-                      type="button"
-                      style={{ background: 'var(--bs-secondary)', color: 'var(--bs-light)', fontSize: 14 }}
+                      style={{ fontSize: 14, minWidth: 100 }}
                       onClick={onReset}
                       disabled={saving || loading}
                     >
                       Reset
+                    </button>
+                    <button
+                      className="btn border rounded-0 fixed-size-btn pe-4 ps-4 ms-0 mt-2"
+                      type="button"
+                      style={{ background: 'var(--bs-primary)', color: 'var(--bs-light)', fontSize: 14, minWidth: 100 }}
+                      onClick={handleSaveTrim}
+                      disabled={saving || loading}
+                    >
+                      Save
                     </button>
                   </div>
                 </div>
