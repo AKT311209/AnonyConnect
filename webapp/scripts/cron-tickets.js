@@ -28,6 +28,7 @@ function runLoop() {
 }
 
 dbReady.then(() => {
+  console.log('Database initialized successfully. Starting auto-reject/cleanup loop...');
   runLoop();
 }).catch((err) => {
   console.error('Database initialization failed:', err);
