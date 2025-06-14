@@ -104,7 +104,6 @@ const AdTicketDetail = ({ ticketId }) => {
             <div style={{
                 wordBreak: 'break-word',
                 overflowWrap: 'break-word',
-                whiteSpace: 'pre-wrap',
                 maxWidth: '100%',
                 overflowX: 'auto',
                 padding: '8px',
@@ -125,7 +124,6 @@ const AdTicketDetail = ({ ticketId }) => {
             <div style={{
                 wordBreak: 'break-word',
                 overflowWrap: 'break-word',
-                whiteSpace: 'pre-wrap',
                 maxWidth: '100%',
                 overflowX: 'auto',
                 padding: '8px',
