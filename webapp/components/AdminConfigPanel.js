@@ -78,7 +78,7 @@ export default function AdminConfigPanel({
           <div className="d-flex justify-content-end gap-2 mb-2">
             <button
               className="btn"
-              style={{ background: '#f94656', color: '#fff', minWidth: 150, borderRadius: 6, fontWeight: 600, fontSize: 17, border: 'none' }}
+              style={{ background: '#f94656', color: '#fff', minWidth: 150, borderRadius: 6, fontWeight: 600, fontSize: 17, border: 'none', order: 1 }}
               onClick={handleReset}
               disabled={saving || loading}
             >
@@ -86,7 +86,7 @@ export default function AdminConfigPanel({
             </button>
             <button
               className="btn"
-              style={{ background: '#3366ff', color: '#fff', minWidth: 150, borderRadius: 6, fontWeight: 600, fontSize: 17, border: 'none' }}
+              style={{ background: '#3366ff', color: '#fff', minWidth: 150, borderRadius: 6, fontWeight: 600, fontSize: 17, border: 'none', order: 2 }}
               onClick={handleSave}
               disabled={saving}
             >
