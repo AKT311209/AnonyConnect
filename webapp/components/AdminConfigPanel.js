@@ -1,5 +1,56 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import SectionContainer from './SectionContainer';
+
+const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
+
+function ConfigEditor({ loading, config, setConfig, editorHeight, editorRef }) {
+  if (loading) return <div>Loading...</div>;
+  return (
+    <div style={{ border: '1.5px solid #aab3b9', borderRadius: 6, marginBottom: 8, background: '#fff', paddingTop: 8, paddingBottom: 8 }}>
+      <MonacoEditor
+        height={editorHeight}
+        language="json"
+        theme="vs-light"
+        value={config}
+        options={{ 
+          fontSize: 16, 
+          fontFamily: 'Roboto, monospace', 
+          minimap: { enabled: false }, 
+          scrollBeyondLastLine: false, 
+          theme: 'vs-light', 
+          automaticLayout: true,
+          scrollbar: { alwaysConsumeMouseWheel: false },
+          mouseWheelScrollSensitivity: 1,
+          mouseWheelZoom: false
+        }}
+        onChange={setConfig}
+        onMount={(_, editor) => { editorRef.current = editor; }}
+      />
+    </div>
+  );
+}
+
+function ConfigStatus({ error, success }) {
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    if (success) {
+      setShow(true);
+      const timer = setTimeout(() => setShow(false), 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setShow(true);
+    }
+  }, [success]);
+
+  return (
+    <>
+      {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
+      {success && show && <div style={{ color: 'green', marginTop: 8, fontWeight: 'bold' }}>Saved!</div>}
+    </>
+  );
+}
 
 export default function AdminConfigPanel({
   fetchConfigUrl = '/api/admin/config',
@@ -11,6 +62,8 @@ export default function AdminConfigPanel({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [editorHeight, setEditorHeight] = useState(250);
+  const editorRef = useRef(null);
 
   useEffect(() => {
     fetch(fetchConfigUrl)
@@ -24,6 +77,13 @@ export default function AdminConfigPanel({
         setLoading(false);
       });
   }, [fetchConfigUrl]);
+
+  useEffect(() => {
+    if (editorRef.current) {
+      const lineCount = config ? config.split('\n').length : 1;
+      setEditorHeight(Math.max(150, Math.min(lineCount * 24 + 24, 600)));
+    }
+  }, [config]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -59,44 +119,60 @@ export default function AdminConfigPanel({
     setLoading(false);
   };
 
+  const handleSaveTrim = async () => {
+    // Remove trailing whitespace from each line and trim file
+    const trimmedConfig = config
+      .split('\n')
+      .map(line => line.replace(/\s+$/g, ''))
+      .join('\n')
+      .replace(/\n+$/g, '')
+      .trim();
+    setConfig(trimmedConfig);
+    await handleSave();
+  };
+
   return (
-    <SectionContainer>
-      <div className="row mb-2">
-        <div className="col-md-8 col-xl-6 text-center mx-auto">
-          <h2 className="fw-bold text-primary" style={{fontSize: '2.1rem', marginBottom: 18}}>Admin Configuration</h2>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col">
-          <textarea
-            className="form-control mb-2"
-            style={{ fontFamily: 'monospace', minHeight: 400, fontSize: 15, borderRadius: 6, border: '1.5px solid #aab3b9', background: '#fff', color: '#222' }}
-            value={config}
-            onChange={e => setConfig(e.target.value)}
-            disabled={saving}
-          />
-          <div className="d-flex justify-content-end gap-2 mb-2">
-            <button
-              className="btn"
-              style={{ background: '#f94656', color: '#fff', minWidth: 225, borderRadius: 6, fontWeight: 600, fontSize: 25.5, border: 'none', order: 1, padding: '18px 0' }}
-              onClick={handleReset}
-              disabled={saving || loading}
-            >
-              Reset
-            </button>
-            <button
-              className="btn"
-              style={{ background: '#3366ff', color: '#fff', minWidth: 225, borderRadius: 6, fontWeight: 600, fontSize: 25.5, border: 'none', order: 2, padding: '18px 0' }}
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : 'Save'}
-            </button>
+    <div className="container pb-5 mb-5 mt-5">
+      <section className="py-5 pt-0">
+        <div className="container py-5 mt-0 pt-5">
+          <div className="row mb-5">
+            <div className="col-md-8 col-xl-6 text-center mx-auto">
+              <h2 className="fw-bold text-primary">Configuration</h2>
+            </div>
           </div>
-          {error && <div className="alert alert-danger py-1">{error}</div>}
-          {success && <div className="alert alert-success py-1">Saved successfully!</div>}
+          <div className="row">
+            <div className="col">
+              <ConfigEditor loading={loading} config={config} setConfig={setConfig} editorHeight={editorHeight} editorRef={editorRef} />
+              <ConfigStatus error={error} success={success} />
+              <div className="d-flex justify-content-end">
+                <div className="btn-group btn-group-equal" role="group" style={{ width: '100%' }}>
+                  <button
+                    className="btn border rounded-0 fixed-size-btn pe-4 ps-4 me-2 mt-2 btn-danger"
+                    type="button"
+                    style={{ fontSize: 14, minWidth: 100, color: '#fff' }}
+                    onClick={handleReset}
+                    disabled={saving || loading}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="btn border rounded-0 fixed-size-btn pe-4 ps-4 ms-0 mt-2"
+                    type="button"
+                    style={{ background: 'var(--bs-primary)', color: 'var(--bs-light)', fontSize: 14, minWidth: 100 }}
+                    onClick={handleSaveTrim}
+                    disabled={saving || loading}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </SectionContainer>
+      </section>
+      <section>
+        <header></header>
+      </section>
+    </div>
   );
 }
