@@ -209,8 +209,8 @@ const AdTicketDetail = ({ ticketId }) => {
                                                             className="btn border rounded-0 fixed-size-btn pe-3 ps-3 me-0"
                                                             type="button"
                                                             style={{
-                                                                background: 'var(--bs-info)',
-                                                                color: 'var(--bs-gray-800)',
+                                                                background: 'var(--bs-primary)',
+                                                                color: '#fff',
                                                                 minWidth: '105px', // 140px * 0.75
                                                                 maxWidth: '150px', // 200px * 0.75
                                                                 fontWeight: 600,
