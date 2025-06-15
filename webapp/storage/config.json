@@ -29,5 +29,12 @@
                 "enabled": true
             }
         }
+    },
+    "rateLimit": {
+        "ticketCreation": {
+            "enabled": true,
+            "maxRequests": 5,
+            "timeWindow": 3600
+        }
     }
 }

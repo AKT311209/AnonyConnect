@@ -93,6 +93,17 @@ const ContactSection = () => {
             return;
         }
 
+        if (response.status === 410) {
+            const toastElement = document.getElementById('toast-1');
+            if (toastElement) {
+                toastElement.querySelector('.toast-header strong').textContent = 'Rate limit exceeded';
+                toastElement.querySelector('.toast-body p').textContent = 'Ticket creation rate limit exceeded';
+                const toast = new window.bootstrap.Toast(toastElement);
+                toast.show();
+            }
+            return;
+        }
+
         if (!response.ok) {
             const toastElement = document.getElementById('toast-1');
             if (toastElement) {

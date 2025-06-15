@@ -16,7 +16,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 const dbReady = new Promise((resolve, reject) => {
-  let pending = 6;
+  let pending = 7;
   function checkDone(err) {
     if (err) {
       reject(err);
@@ -63,6 +63,12 @@ const dbReady = new Promise((resolve, reject) => {
     username TEXT NOT NULL,
     expires_at INTEGER NOT NULL,
     used INTEGER DEFAULT 0
+  )`, checkDone);
+
+  db.run(`CREATE TABLE IF NOT EXISTS ticket_rate_limits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ip TEXT NOT NULL,
+    created_at INTEGER NOT NULL
   )`, checkDone);
 });
 
@@ -344,6 +350,21 @@ function deleteAllAdminSessions() {
   return runExec('DELETE FROM sessions WHERE username = ?', [process.env.ADMIN_USERNAME]);
 }
 
+// Rate limit helpers
+function addTicketRateLimit(ip) {
+  const now = Math.floor(Date.now() / 1000);
+  return runExec('INSERT INTO ticket_rate_limits (ip, created_at) VALUES (?, ?)', [ip, now]);
+}
+
+function countTicketRateLimit(ip, since) {
+  return runGet('SELECT COUNT(*) as count FROM ticket_rate_limits WHERE ip = ? AND created_at > ?', [ip, since])
+    .then(row => row.count);
+}
+
+function cleanupOldTicketRateLimits(before) {
+  return runExec('DELETE FROM ticket_rate_limits WHERE created_at < ?', [before]);
+}
+
 module.exports = {
   db,
   dbReady,
@@ -373,4 +394,7 @@ module.exports = {
   getValidAdminLoginToken,
   markAdminLoginTokenUsed,
   deleteAllAdminSessions,
+  addTicketRateLimit,
+  countTicketRateLimit,
+  cleanupOldTicketRateLimits,
 };

@@ -1,4 +1,4 @@
-import { createTicket, checkDuplicateTicketId } from '../../lib/db';
+import { createTicket, checkDuplicateTicketId, addTicketRateLimit, countTicketRateLimit, cleanupOldTicketRateLimits } from '../../lib/db';
 import bcrypt from 'bcrypt';
 import sendTelegramNotification, { getNotificationSettings } from '../../scripts/sendTelegramNotification';
 import verifyCloudflare from '../../lib/verify-cloudflare';
@@ -27,6 +27,33 @@ export default async function handler(req, res) {
       // Reject if name or email is too long
       if ((name && name.length > 25) || (email && email.length > 25)) {
         return res.status(413).json({ error: 'Name or email too long' });
+      }
+
+      // Rate limit logic
+      const fs = require('fs');
+      const path = require('path');
+      const configPath = path.resolve(process.cwd(), 'storage', 'config.json');
+      let config = {};
+      try {
+        config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+      } catch (e) {
+        // fallback: no config, no rate limit
+      }
+      const rateLimitCfg = config?.rateLimit?.ticketCreation;
+      if (rateLimitCfg?.enabled) {
+        const maxRequests = rateLimitCfg.maxRequests || 5;
+        const timeWindow = rateLimitCfg.timeWindow || 3600;
+        // Get IP address
+        const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+        const now = Math.floor(Date.now() / 1000);
+        const since = now - timeWindow;
+        // Clean up old entries (optional, for DB hygiene)
+        await cleanupOldTicketRateLimits(since - 86400); // keep 1 day extra
+        const count = await countTicketRateLimit(ip, since);
+        if (count >= maxRequests) {
+          return res.status(410).json({ error: 'Ticket creation rate limit exceeded' });
+        }
+        await addTicketRateLimit(ip);
       }
 
       let ticket_id = generateTicketId();
