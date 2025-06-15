@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { withAdminPageAuth } from '../../../utils/withAdminPageAuth';
 import Head from 'next/head';
+import MainLayout from '../../../components/MainLayout';
 
 const AdminTicketDetail = () => {
   const router = useRouter();
@@ -29,14 +30,14 @@ const AdminTicketDetail = () => {
   }
 
   return (
-    <>
+    <MainLayout>
       <Head>
         <title>AnonyConnect – Admin Ticket Details</title>
       </Head>
       <AdNav />
       {ticket_id && <AdTicketDetail ticketId={ticket_id} />}
       <Footer />
-    </>
+    </MainLayout>
   );
 };
 

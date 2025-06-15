@@ -5,6 +5,7 @@ import AdNav from '../../components/AdminNavbar';
 import Footer from '../../components/footer';
 import ToastMessage from '../../components/ToastMessage';
 import Head from 'next/head';
+import MainLayout from '../../components/MainLayout';
 
 const AdminLoginPage = () => {
   const router = useRouter();
@@ -99,7 +100,7 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <>
+    <MainLayout>
       <Head>
         <title>AnonyConnect – Admin Login</title>
       </Head>
@@ -114,7 +115,7 @@ const AdminLoginPage = () => {
       />
       <ToastMessage header="Invalid credentials" body="Password or username is invalid, please try again." />
       <Footer />
-    </>
+    </MainLayout>
   );
 };
 

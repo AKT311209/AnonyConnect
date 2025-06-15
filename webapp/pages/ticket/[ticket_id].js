@@ -7,6 +7,7 @@ import Footer from '../../components/footer';
 import TicketVerification from '../../components/ticketverificationform';
 import TicketDetail from '../../components/ticketdetail';
 import Head from 'next/head';
+import MainLayout from '../../components/MainLayout';
 
 const TicketPage = () => {
     const router = useRouter();
@@ -140,12 +141,11 @@ const TicketPage = () => {
     };
 
     return (
-        <>
+        <MainLayout>
             <Head>
                 <title>AnonyConnect – Ticket Details</title>
             </Head>
             <NavBar />
-
             <div>
                 {showVerification && !isVerified && (
                     <TicketVerification ticketId={ticket_id} onVerify={handleVerification} />
@@ -156,7 +156,7 @@ const TicketPage = () => {
                 <ToastMessage header="Invalid password" body="Password is invalid, please try again." />
             </div>
             <Footer />
-        </>
+        </MainLayout>
     );
 };
 

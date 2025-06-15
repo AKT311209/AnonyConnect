@@ -4,6 +4,7 @@ import NavBar from '../components/navbar';
 import Footer from '../components/footer';
 import Success from '../components/successcomponent';
 import Head from 'next/head';
+import MainLayout from '../components/MainLayout';
 
 const SuccessPage = () => {
   const router = useRouter();
@@ -46,14 +47,14 @@ const SuccessPage = () => {
   }
 
   return (
-    <>
+    <MainLayout>
       <Head>
         <title>AnonyConnect – Ticket Submitted</title>
       </Head>
       <NavBar />
       <Success ticket={ticket} />
       <Footer />
-    </>
+    </MainLayout>
   );
 };
 
