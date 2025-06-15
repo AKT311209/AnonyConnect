@@ -101,12 +101,12 @@ export default function AdminConfigLayout({
               <div className="col">
                 <ConfigEditor loading={loading} config={config} setConfig={setConfig} editorHeight={editorHeight} editorRef={editorRef} />
                 <ConfigStatus error={error} success={success} />
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-end">  {/* Changed from justify-content-between to justify-content-end */}
                   <div className="btn-group btn-group-equal" role="group" style={{ width: '100%' }}>
                     <button
                       className="btn border rounded-0 fixed-size-btn pe-4 ps-4 me-2 mt-2 btn-danger"
                       type="button"
-                      style={{ fontSize: 14, minWidth: 100 }}
+                      style={{ fontSize: 14, minWidth: 100, color: '#fff' }} // Added color: #fff
                       onClick={onReset}
                       disabled={saving || loading}
                     >
