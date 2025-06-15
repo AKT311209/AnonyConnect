@@ -24,6 +24,7 @@ const ContactSection = () => {
                 const toast = new window.bootstrap.Toast(toastElement);
                 toast.show();
             }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
         if (data.email && data.email.length > 50) {
@@ -34,6 +35,7 @@ const ContactSection = () => {
                 const toast = new window.bootstrap.Toast(toastElement);
                 toast.show();
             }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
@@ -79,6 +81,7 @@ const ContactSection = () => {
                 const toast = new window.bootstrap.Toast(toastElement);
                 toast.show();
             }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
@@ -90,6 +93,7 @@ const ContactSection = () => {
                 const toast = new window.bootstrap.Toast(toastElement);
                 toast.show();
             }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
@@ -101,6 +105,7 @@ const ContactSection = () => {
                 const toast = new window.bootstrap.Toast(toastElement);
                 toast.show();
             }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
@@ -112,6 +117,7 @@ const ContactSection = () => {
                 const toast = new window.bootstrap.Toast(toastElement);
                 toast.show();
             }
+            setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
