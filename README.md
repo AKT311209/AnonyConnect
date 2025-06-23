@@ -31,7 +31,7 @@ A privacy-first, anonymous contact and ticketing platform. Inspired by tradition
 - Quick start: use the prebuilt Docker image or follow the guides in `/Docs` for manual/local installation.
 
 ## Contribution
-We welcome contributions! Please see [CONTRIBUTE.md](CONTRIBUTE.md) for guidelines.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
