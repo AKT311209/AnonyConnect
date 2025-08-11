@@ -15,7 +15,7 @@
     "easymde": "^2.20.0",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.47",
-    "next": "^15.1.7",
+    "next": "^15.4.6",
     "qrcode": "^1.5.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
