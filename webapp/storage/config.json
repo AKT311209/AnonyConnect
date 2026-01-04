@@ -18,6 +18,9 @@
         "onAdminLogin": true,
         "onAdminLoginAttempt": true
     },
+    "browserPush": {
+        "enabled": true
+    },
     "appearance": {
         "admin": {
             "ticketsPagination": 5

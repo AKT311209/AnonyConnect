@@ -42,6 +42,67 @@ const SuccessPage = () => {
     fetchTicket();
   }, [ticket_id]);
 
+  useEffect(() => {
+    // When ticket is loaded, request notification permission and attempt subscription
+    if (!ticket) return;
+
+    async function setupPush() {
+      // Check server-side config whether browser push is enabled
+      try {
+        const cfgRes = await fetch('/api/push/enabled');
+        const cfgJson = cfgRes.ok ? await cfgRes.json() : { enabled: true };
+        if (!cfgJson.enabled) return;
+      } catch (e) {
+        // if config check fails, default to enabled
+      }
+      try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+
+        // Only ask if permission not denied
+        if (Notification.permission === 'default') {
+          await Notification.requestPermission();
+        }
+
+        if (Notification.permission !== 'granted') return;
+
+        const reg = await navigator.serviceWorker.register('/sw.js');
+
+        // helper to convert VAPID key
+        const urlBase64ToUint8Array = (base64String) => {
+          const padding = '='.repeat((4 - base64String.length % 4) % 4);
+          const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+          const rawData = window.atob(base64);
+          const outputArray = new Uint8Array(rawData.length);
+          for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+          }
+          return outputArray;
+        };
+
+        const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+        const subscribeOptions = {
+          userVisibleOnly: true,
+          applicationServerKey: vapidKey ? urlBase64ToUint8Array(vapidKey) : undefined
+        };
+
+        const existingSub = await reg.pushManager.getSubscription();
+        const sub = existingSub || await reg.pushManager.subscribe(subscribeOptions);
+
+        // send to server with ticket id (no PII)
+        await fetch('/api/push/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription: sub, ticket_id: ticket.ticket_id })
+        });
+      } catch (err) {
+        // fail silently to preserve UX
+        console.error('push setup failed', err);
+      }
+    }
+
+    setupPush();
+  }, [ticket]);
+
   if (!ticket) {
     return null; // or a loading spinner
   }

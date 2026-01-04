@@ -25,6 +25,7 @@
     "remark-breaks": "^4.0.0",
     "speakeasy": "^2.0.0",
     "sqlite3": "^5.1.7",
+    "web-push": "^3.5.0",
     "uuid": "^11.1.0"
   },
   "scripts": {

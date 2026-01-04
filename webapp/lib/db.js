@@ -70,6 +70,14 @@ const dbReady = new Promise((resolve, reject) => {
     ip TEXT NOT NULL,
     created_at INTEGER NOT NULL
   )`, checkDone);
+
+  db.run(`CREATE TABLE IF NOT EXISTS push_subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticket_id TEXT NOT NULL,
+    endpoint TEXT NOT NULL,
+    subscription_json TEXT NOT NULL,
+    created_at INTEGER DEFAULT (strftime('%s','now'))
+  )`, checkDone);
 });
 
 // Generic helpers
@@ -100,10 +108,24 @@ function runExec(sql, params = []) {
   });
 }
 
+function addPushSubscription(ticket_id, endpoint, subscription_json) {
+  const sql = 'INSERT INTO push_subscriptions (ticket_id, endpoint, subscription_json) VALUES (?, ?, ?)';
+  return runExec(sql, [ticket_id, endpoint, subscription_json]);
+}
+
+function removePushSubscriptionByEndpoint(endpoint) {
+  const sql = 'DELETE FROM push_subscriptions WHERE endpoint = ?';
+  return runExec(sql, [endpoint]);
+}
+
+function getSubscriptionsByTicketId(ticket_id) {
+  return runAll('SELECT id, endpoint, subscription_json FROM push_subscriptions WHERE ticket_id = ?', [ticket_id]);
+}
+
 function createTicket({ ticket_id, sender_name, sender_email, message, password, status, response }) {
   const sql = 'INSERT INTO tickets (ticket_id, sender_name, sender_email, message, password, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)';
   return new Promise((resolve, reject) => {
-    db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function(err) {
+    db.run(sql, [ticket_id, sender_name, sender_email, message, password, status, response], function (err) {
       if (err) return reject(err);
       return resolve({ id: this.lastID });
     });
@@ -267,7 +289,7 @@ function getAdminSetting(key) {
 
 function setAdminSetting(key, value) {
   return new Promise((resolve, reject) => {
-    db.run('INSERT OR REPLACE INTO admin_settings (key, value) VALUES (?, ?)', [key, value], function(err) {
+    db.run('INSERT OR REPLACE INTO admin_settings (key, value) VALUES (?, ?)', [key, value], function (err) {
       if (err) return reject(err);
       resolve();
     });
@@ -276,7 +298,7 @@ function setAdminSetting(key, value) {
 
 function removeAdminSetting(key) {
   return new Promise((resolve, reject) => {
-    db.run('DELETE FROM admin_settings WHERE key = ?', [key], function(err) {
+    db.run('DELETE FROM admin_settings WHERE key = ?', [key], function (err) {
       if (err) return reject(err);
       resolve();
     });
@@ -285,7 +307,7 @@ function removeAdminSetting(key) {
 
 function clear2FASettings() {
   return new Promise((resolve, reject) => {
-    db.run('DELETE FROM admin_settings WHERE key = "2fa_secret"', [], function(err) {
+    db.run('DELETE FROM admin_settings WHERE key = "2fa_secret"', [], function (err) {
       if (err) return reject(err);
       resolve();
     });
@@ -307,7 +329,7 @@ async function runArbitrarySql(sql) {
 // Admin login tokens helpers
 function createAdminLoginToken(token, username, expires_at) {
   return new Promise((resolve, reject) => {
-    db.run('INSERT INTO admin_login_tokens (token, username, expires_at) VALUES (?, ?, ?)', [token, username, expires_at], function(err) {
+    db.run('INSERT INTO admin_login_tokens (token, username, expires_at) VALUES (?, ?, ?)', [token, username, expires_at], function (err) {
       if (err) return reject(err);
       resolve();
     });
@@ -326,7 +348,7 @@ function getValidAdminLoginToken(token) {
 
 function markAdminLoginTokenUsed(token) {
   return new Promise((resolve, reject) => {
-    db.run('UPDATE admin_login_tokens SET used = 1 WHERE token = ?', [token], function(err) {
+    db.run('UPDATE admin_login_tokens SET used = 1 WHERE token = ?', [token], function (err) {
       if (err) return reject(err);
       resolve();
     });
@@ -397,4 +419,7 @@ module.exports = {
   addTicketRateLimit,
   countTicketRateLimit,
   cleanupOldTicketRateLimits,
+  addPushSubscription,
+  removePushSubscriptionByEndpoint,
+  getSubscriptionsByTicketId,
 };

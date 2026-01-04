@@ -34,6 +34,12 @@ This guide helps you identify where to edit the codebase to customize your Anony
   - Edit/replace logic in `webapp/lib/verify-cloudflare.js`.
   - Update keys in `.env`.
 
+- **Privacy-preserving Browser Push (optional):**
+  - Implemented using the Web Push API (service worker + VAPID) and stored subscriptions tied only to a ticket identifier.
+  - Files added/used: `webapp/public/sw.js`, `webapp/pages/api/push/subscribe.js`, `webapp/pages/api/push/unsubscribe.js`, and server-side send in `webapp/pages/api/admin/tickets/respond.js`.
+  - Privacy rules: do not collect PII; store only `subscription` JSON and the `ticket_id`; send minimal notification payloads (generic text and `ticket_id` only); allow unsubscribe and cleanup of invalid subscriptions.
+  - Environment variables: `VAPID_PUBLIC`, `VAPID_PRIVATE` for server; `NEXT_PUBLIC_VAPID_PUBLIC_KEY` for client. Generate VAPID keys with `npx web-push generate-vapid-keys` and set them in your deployment environment.
+
 ## 5. Configuration & Security
 - **App Settings:**
   - Edit `webapp/storage/config.json` for admin credentials, notification settings, and more.
