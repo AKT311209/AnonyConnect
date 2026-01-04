@@ -19,7 +19,8 @@
         "onAdminLoginAttempt": true
     },
     "browserPush": {
-        "enabled": true
+        "enabled": true,
+        "timeout": 1800
     },
     "appearance": {
         "admin": {
@@ -29,7 +30,7 @@
     "security": {
         "admin": {
             "2fa": {
-                "enabled": true
+                "enabled": false
             }
         }
     },

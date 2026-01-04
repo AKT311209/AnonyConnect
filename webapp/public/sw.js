@@ -7,7 +7,7 @@ self.addEventListener('push', function (event) {
     }
 
     const title = 'AnonyConnect';
-    const body = data.body || 'Your ticket was answered — tap to view.';
+    const body = data.body || 'Your ticket was responded.';
     const options = {
         body,
         tag: data.tag || 'ticket-update',

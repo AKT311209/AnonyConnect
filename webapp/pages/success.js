@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import NavBar from '../components/navbar';
 import Footer from '../components/footer';
 import Success from '../components/successcomponent';
+import ToastMessage from '../components/ToastMessage';
 import Head from 'next/head';
 import MainLayout from '../components/MainLayout';
 
@@ -10,6 +11,7 @@ const SuccessPage = () => {
   const router = useRouter();
   const { ticket_id } = router.query;
   const [ticket, setTicket] = useState(null);
+  const [showNotifyDeniedToast, setShowNotifyDeniedToast] = useState(false);
 
   useEffect(() => {
     if (!ticket_id) {
@@ -60,12 +62,21 @@ const SuccessPage = () => {
 
         // Only ask if permission not denied
         if (Notification.permission === 'default') {
-          await Notification.requestPermission();
+          const p = await Notification.requestPermission();
+          if (p !== 'granted') {
+            setShowNotifyDeniedToast(true);
+            return;
+          }
         }
 
-        if (Notification.permission !== 'granted') return;
+        if (Notification.permission === 'denied') {
+          setShowNotifyDeniedToast(true);
+          return;
+        }
 
-        const reg = await navigator.serviceWorker.register('/sw.js');
+        // Register service worker and wait until it's active/controlling
+        await navigator.serviceWorker.register('/sw.js');
+        const reg = await navigator.serviceWorker.ready;
 
         // helper to convert VAPID key
         const urlBase64ToUint8Array = (base64String) => {
@@ -114,6 +125,9 @@ const SuccessPage = () => {
       </Head>
       <NavBar />
       <Success ticket={ticket} />
+      {showNotifyDeniedToast && (
+        <ToastMessage header="Notification not allowed" body="You won't be notified when your ticket is responded." />
+      )}
       <Footer />
     </MainLayout>
   );
