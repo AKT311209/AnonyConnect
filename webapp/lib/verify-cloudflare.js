@@ -1,6 +1,11 @@
 import fetch from 'node-fetch';
 
 export default async function verifyCloudflare(turnstileResponse) {
+  // Bypass Turnstile checks in local development for easier testing.
+  if (process.env.NODE_ENV === 'development') {
+    return { success: true, bypass: true };
+  }
+
   if (!turnstileResponse) {
     return { success: false, error: 'Missing turnstile response' };
   }
