@@ -126,7 +126,7 @@ const SuccessPage = () => {
       <NavBar />
       <Success ticket={ticket} />
       {showNotifyDeniedToast && (
-        <ToastMessage header="Notification not allowed" body="You won't be notified when your ticket is responded." />
+        <ToastMessage autoShow={true} header="Notification not allowed" body="You won't be notified when your ticket is responded." />
       )}
       <Footer />
     </MainLayout>

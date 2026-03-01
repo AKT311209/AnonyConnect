@@ -113,7 +113,7 @@ const AdminLoginPage = () => {
         twoFALoading={twoFALoading}
         twoFAError={twoFAError}
       />
-      <ToastMessage header="Invalid credentials" body="Password or username is invalid, please try again." />
+      <ToastMessage id="toast-1" autoShow={false} header="Invalid credentials" body="Password or username is invalid, please try again." />
       <Footer />
     </MainLayout>
   );

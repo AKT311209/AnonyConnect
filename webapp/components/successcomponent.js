@@ -29,7 +29,7 @@ const Success = ({ ticket }) => {
             <div className="col-md-8 col-xl-6 text-center mx-auto">
               <h2 className="fw-bold text-primary">Ticket Confirmation</h2>
               <p className="text-info w-lg-50 mb-1 mt-2 pt-0"><strong>Your ticket has been successfully recorded. The details are listed below.</strong></p>
-              <p className="w-lg-50 mb-1">The admin typically responds within 24 hours, though it may take longer in some cases. Please <strong>bookmark your ticket URL</strong> or <strong>save your ticket ID</strong> to check for updates later via the <strong>Tickets</strong>&nbsp;tab. Also, please enable notifications in your browser to receive updates.</p>
+              <p className="w-lg-50 mb-1">The admin typically responds within 24 hours, though it may take longer in some cases. Please <strong>bookmark your ticket URL</strong> or <strong>save your ticket ID</strong> to check for updates later via the <strong>Tickets</strong>&nbsp;tab. Also, please <strong> enable notifications </strong> in your browser to receive updates.</p>
             </div>
           </div>
           <ul className="list-group border rounded-0">

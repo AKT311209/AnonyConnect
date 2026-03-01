@@ -153,7 +153,7 @@ const TicketPage = () => {
                 {isVerified && ticketData && (
                     <TicketDetail ticketData={ticketData} />
                 )}
-                <ToastMessage header="Invalid password" body="Password is invalid, please try again." />
+                <ToastMessage id="toast-1" autoShow={false} header="Invalid password" body="Password is invalid, please try again." />
             </div>
             <Footer />
         </MainLayout>

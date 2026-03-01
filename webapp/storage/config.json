@@ -20,7 +20,7 @@
     },
     "browserPush": {
         "enabled": true,
-        "timeout": 1800
+        "timeout": 5
     },
     "appearance": {
         "admin": {
@@ -36,7 +36,7 @@
     },
     "rateLimit": {
         "ticketCreation": {
-            "enabled": true,
+            "enabled": false,
             "maxRequests": 5,
             "timeWindow": 3600
         }

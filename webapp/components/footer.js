@@ -5,7 +5,7 @@ const Footer = () => {
     <footer style={{ textAlign: 'center', background: 'var(--bs-light)' }}>
       <div style={{ container: 'text-center', padding: '4rem 0', marginTop: '0' }}>
         <p style={{ marginBottom: '0' }}>
-          Copyright © 2025 
+          Copyright © {new Date().getFullYear()}
           <a href="https://github.com/AKT311209/anonyconnect" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline', marginLeft: 4 }}>
             AnonyConnect
           </a>

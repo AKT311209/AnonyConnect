@@ -1,21 +1,28 @@
-import React, { useEffect } from 'react';
-import Turnstile from 'react-turnstile';
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Load Turnstile only on client to avoid SSR/hydration issues
+const Turnstile = dynamic(() => import('react-turnstile'), { ssr: false });
 
 const TurnstileWidget = ({ sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY, onSuccess, onExpire, ...props }) => {
-    // In development, bypass the widget and immediately notify success on the client.
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-        useEffect(() => {
-            if (typeof onSuccess === 'function') {
-                onSuccess('dev-turnstile-bypass-token');
-            }
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Dev-mode bypass: run only on client
+    useEffect(() => {
+        if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+            if (typeof onSuccess === 'function') onSuccess('dev-turnstile-bypass-token');
             return () => {
                 if (typeof onExpire === 'function') onExpire();
             };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, []);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-        return null;
-    }
+    if (!mounted) return null;
 
     return <Turnstile sitekey={sitekey} onSuccess={onSuccess} onExpire={onExpire} {...props} />;
 };

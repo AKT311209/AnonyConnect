@@ -12,28 +12,53 @@ const ContactSection = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!turnstileValid) return;
+
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
 
+        // helper to show toast (uses bootstrap if available, otherwise toggles classes)
+        const showToast = (el) => {
+            if (!el) return;
+            const usingBootstrap = (typeof window !== 'undefined' && window.bootstrap && typeof window.bootstrap.Toast === 'function');
+            try {
+                if (usingBootstrap) {
+                    new window.bootstrap.Toast(el).show();
+                    return;
+                }
+            } catch (e) {
+                // ignore and fallback
+            }
+            try {
+                el.classList.remove('hide');
+                el.classList.add('show');
+                el.style.display = 'block';
+                setTimeout(() => {
+                    try {
+                        el.classList.remove('show');
+                        el.classList.add('hide');
+                        el.style.display = 'none';
+                    } catch (e) { }
+                }, 1500);
+            } catch (e) { }
+        };
+
         // Name and email length validation
         if (data.name && data.name.length > 30) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Input too long';
                 toastElement.querySelector('.toast-body p').textContent = 'Name cannot exceed 30 characters.';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
         if (data.email && data.email.length > 50) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Input too long';
                 toastElement.querySelector('.toast-body p').textContent = 'Email cannot exceed 50 characters.';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
@@ -41,12 +66,11 @@ const ContactSection = () => {
 
         // Client-side validation for message length
         if (!data.message || data.message.length < 15) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Message too short';
                 toastElement.querySelector('.toast-body p').textContent = 'Please ensure the message is at least 15 characters long.';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
@@ -54,12 +78,11 @@ const ContactSection = () => {
 
         // Client-side validation for email format (optional, add if needed)
         if (data.email && !/^\S+@\S+\.\S+$/.test(data.email)) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Invalid email';
                 toastElement.querySelector('.toast-body p').textContent = 'Please enter a valid email address.';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
@@ -74,48 +97,44 @@ const ContactSection = () => {
         });
 
         if (response.status === 403) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Cloudflare Verification Failed';
                 toastElement.querySelector('.toast-body p').textContent = 'Cloudflare Turnstile verification failed. Please try again.';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
         if (response.status === 413) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Input too long';
                 toastElement.querySelector('.toast-body p').textContent = 'Name or email cannot exceed their character limits.';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
         if (response.status === 410) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Rate limit exceeded';
                 toastElement.querySelector('.toast-body p').textContent = 'Ticket creation rate limit exceeded';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
         }
 
         if (!response.ok) {
-            const toastElement = document.getElementById('toast-1');
+            const toastElement = (toastRef && toastRef.current) || document.getElementById('toast-1');
             if (toastElement) {
                 toastElement.querySelector('.toast-header strong').textContent = 'Submission failed';
                 toastElement.querySelector('.toast-body p').textContent = 'Failed to create ticket. Please try again later.';
-                const toast = new window.bootstrap.Toast(toastElement);
-                toast.show();
+                showToast(toastElement);
             }
             setTimeout(() => router.reload(), 1500); // Reload after showing toast
             return;
@@ -199,7 +218,7 @@ const ContactSection = () => {
                             </form>
                         </div>
                     </div>
-                    <ToastMessage header="Message too short" body="Please ensure the message is at least 15 characters long." />
+                    <ToastMessage ref={toastRef} id="toast-1" autoShow={false} header="Message too short" body="Please ensure the message is at least 15 characters long." />
                 </div>
             </div>
         </section>

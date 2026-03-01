@@ -13,7 +13,7 @@ const TicketPage = () => {
       </Head>
       <NavBar />
       <TicketSearch />
-      <ToastMessage header="Invalid ticket" body="The system could not find the provided ticket ID. Please try again." />
+      <ToastMessage id="toast-1" autoShow={false} header="Invalid ticket" body="The system could not find the provided ticket ID. Please try again." />
       <Footer />
     </MainLayout>
   );
