@@ -24,9 +24,13 @@
     "react-turnstile": "^1.1.4",
     "remark-breaks": "^4.0.0",
     "speakeasy": "^2.0.0",
-    "sqlite3": "^5.1.7",
-    "web-push": "^3.5.0",
-    "uuid": "^11.1.0"
+    "sqlite3": "^6.0.1",
+    "uuid": "^11.1.0",
+    "web-push": "^3.5.0"
+  },
+  "overrides": {
+    "postcss": "^8.5.31",
+    "tar": "^7.5.22"
   },
   "scripts": {
     "dev": "concurrently \"node scripts/cron-tickets.js\" \"next dev\"",
